@@ -1,0 +1,93 @@
+.login-container {
+  display: flex;
+  height: 100vh;
+}
+
+.login-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  background: #ffffff; /* Fondo blanco */
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Sombra para separar visualmente */
+}
+
+.logo {
+  width: 50px; /* Ajusta el tamaño del logo */
+  height: auto;
+  position: absolute; /* Permite mover el logo a un lugar específico */
+  top: 20px; /* Distancia desde la parte superior */
+  left: 20px; /* Distancia desde el lado izquierdo */
+}
+
+.logo-text {
+  font-size: 18px; /* Tamaño del texto */
+  font-weight: bold; /* Negrita para resaltar */
+  color: #000000; /* Color del texto */
+  position: absolute; /* Permite mover el logo a un lugar específico */
+  top: 31px; /* Distancia desde la parte superior */
+  left: 65px; /* Distancia desde el lado izquierdo */
+}
+
+.login-header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: left;
+  color: #000000;
+}
+
+.login-header p {
+  font-size: 16px;
+  text-align: left;
+  color: #888888;
+}
+
+.login-form {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.login-form label {
+  font-size: 14px;
+  color: #555555;
+  font-weight: bold;
+}
+
+.forgot-password {
+  display: block;
+  margin: 10px 0;
+  text-align: right;
+  color: #722ed1;
+  font-size: 14px;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #722ed1;
+  border-color: #722ed1;
+  color: #ffffff;
+}
+
+.login-image {
+  flex: 1.7;
+  background-size: cover; /* Ajusta la imagen de fondo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.login-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(114, 46, 209, 0.8); /* Superposición con el color */
+}
+
+.login-image img {
+  z-index: 1; /* Asegura que la imagen esté por encima de la superposición */
+  width: 60%; /* Ajusta el tamaño de la imagen */
+  height: auto;
+}
