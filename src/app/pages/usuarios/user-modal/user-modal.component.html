@@ -1,0 +1,164 @@
+<div class="modal-dialog modal-lg modal-dialog-centered"></div>
+<div class="container">
+  <!-- Modal Header -->
+  <div class="modal-header d-flex justify-content-center w-100">
+    <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="formGroup" novalidate>
+      <!-- Campo de Usuario -->
+      <div class="form-group mb-4">
+        <label for="usuario" class="block text-xs font-bold mb-2 text-red-500"
+          >Nombre</label
+        >
+        <input
+          type="text"
+          id="usuario"
+          class="form-control"
+          formControlName="usuario"
+          placeholder="Nombre de usuario"
+        />
+        <div
+          *ngIf="formGroup.get('usuario')?.hasError('required')"
+          class="text-danger text-sm mt-2"
+        >
+          Este campo es obligatorio
+        </div>
+      </div>
+
+      <!-- Campo de Rol -->
+      <div class="form-group mb-4">
+        <label for="rol" class="block text-xs font-bold mb-2 text-red-500"
+          >Rol</label
+        >
+        <select id="rol" class="form-control" formControlName="rol">
+          <option value="">Seleccione un rol</option>
+          <option value="admin">Administrador</option>
+          <option value="user">Usuario</option>
+        </select>
+        <div
+          *ngIf="
+            formGroup.get('rol')?.hasError('required') &&
+            (formGroup.get('rol')?.touched || formGroup.get('rol')?.dirty)
+          "
+          class="text-danger text-sm mt-2"
+        >
+          Este campo es obligatorio
+        </div>
+      </div>
+
+      <!-- Campo de Correo -->
+      <div class="form-group mb-4">
+        <label for="correo" class="block text-xs font-bold mb-2 text-red-500"
+          >Correo</label
+        >
+        <input
+          type="email"
+          id="correo"
+          class="form-control"
+          formControlName="correo"
+          placeholder="Correo electrónico"
+        />
+        <!-- validacion-->
+        <div
+          *ngIf="formGroup.get('correo')?.hasError('required')"
+          class="text-danger text-sm mt-2"
+        >
+          Este campo es obligatorio
+        </div>
+        <!-- Validación formato-->
+        <div
+          *ngIf="
+            formGroup.get('correo')?.hasError('pattern') &&
+            !formGroup.get('correo')?.hasError('required')
+          "
+          class="text-danger text-sm mt-2"
+        >
+          Debe ser un correo valido
+        </div>
+      </div>
+
+      <!-- Campo de Contraseña -->
+      <div class="form-group mb-4">
+        <label
+          for="contrasena"
+          class="block text-xs font-bold mb-2 text-red-500"
+          >Contraseña</label
+        >
+        <input
+          type="password"
+          id="contrasena"
+          class="form-control"
+          formControlName="contrasena"
+          placeholder="Contraseña"
+          maxlength="15"
+        />
+        <!-- Validación: Campo obligatorio -->
+        <div
+          *ngIf="formGroup.get('contrasena')?.hasError('required')"
+          class="text-danger text-sm mt-2"
+        >
+          Este campo es obligatorio
+        </div>
+        <!-- Validación: Mínimo 12 caracteres -->
+        <div
+          *ngIf="
+            formGroup.get('contrasena')?.hasError('minlength') &&
+            !formGroup.get('contrasena')?.hasError('required')
+          "
+          class="text-danger text-sm mt-2"
+        >
+          La contraseña debe tener al menos 12 caracteres
+        </div>
+        <!-- Validación: Máximo 15 caracteres -->
+        <div
+          *ngIf="
+            formGroup.get('contrasena')?.hasError('maxlength') &&
+            !formGroup.get('contrasena')?.hasError('required')
+          "
+          class="text-danger text-sm mt-2"
+        ></div>
+      </div>
+
+      <!-- Campo de Fecha de Creación
+      <div class="form-group mb-4">
+        <label
+          for="fechaCreacion"
+          class="block text-xs font-bold mb-2 text-red-500"
+          >Fecha de Creación</label
+        >
+        <input
+          type="date"
+          id="fechaCreacion"
+          class="form-control"
+          formControlName="fechaCreacion"
+        />
+        <div
+          *ngIf="formGroup.get('fechaCreacion')?.hasError('required')"
+          class="text-danger text-sm mt-2"
+        >
+          Este campo es obligatorio
+        </div>
+      </div>
+    </form>
+  </div>-->
+
+      <div class="modal-footer d-flex justify-content-center w-100 mt-3">
+        <!-- Botones de Cancelar / Guardar -->
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button
+          *ngIf="button"
+          type="button"
+          class="btn btn-primary mx-2"
+          [disabled]="formGroup.invalid"
+          (click)="onSubmit()"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,135 @@
+
+<div class="modal-dialog modal-lg modal-dialog-centered"></div>
+<div class="container">
+  <!-- Modal Header -->
+  <div class="modal-header d-flex justify-content-center w-100">
+    <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="formGroup" novalidate>
+
+      <!-- Campo de Cédula -->
+      <div class="form-group mb-4">
+        <label for="cedula" class="block text-xs font-bold mb-2 text-red-500"
+          >Cédula</label
+        >
+        <input
+          type="text"
+          id="cedula"
+          class="form-control"
+          formControlName="cedula"
+          placeholder="Cédula"
+          maxlength="10"
+          inputmode="numeric"
+          (keypress)="allowOnlyNumbers($event)"
+        />
+        <div *ngIf="formGroup.get('cedula')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('cedula')?.hasError('required')">
+            La cédula es obligatoria.
+          </small>
+          <small *ngIf="formGroup.get('cedula')?.hasError('pattern')">
+            La cédula solo debe contener números y no más de 10 dígitos.
+          </small>
+          <small *ngIf="formGroup.get('cedula')?.hasError('maxlength')">
+            La cédula no debe exceder los 10 dígitos.
+          </small>
+        </div>
+      </div>
+
+      <!-- Campo de Nombre -->
+      <div class="form-group mb-4">
+        <label for="nombre" class="block text-xs font-bold mb-2 text-red-500"
+          >Nombre</label
+        >
+        <input
+          type="text"
+          id="nombre"
+          class="form-control"
+          formControlName="nombre"
+          placeholder="Nombre"
+          maxlength="20"
+        />
+        <div *ngIf="formGroup.get('nombre')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('nombre')?.hasError('required')">
+            El nombre es obligatorio.
+          </small>
+          <small *ngIf="formGroup.get('nombre')?.hasError('maxlength')">
+            El nombre no debe exceder los 20 caracteres.
+          </small>
+        </div>
+      </div>
+
+      <!-- Campo de Apellido -->
+      <div class="form-group mb-4">
+        <label for="apellido" class="block text-xs font-bold mb-2 text-red-500"
+          >Apellido</label
+        >
+        <input
+          type="text"
+          id="apellido"
+          class="form-control"
+          formControlName="apellido"
+          placeholder="Apellido"
+          maxlength="20"
+        />
+        <div *ngIf="formGroup.get('apellido')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('apellido')?.hasError('required')">
+            El apellido es obligatorio.
+          </small>
+          <small *ngIf="formGroup.get('apellido')?.hasError('maxlength')">
+            El apellido no debe exceder los 20 caracteres.
+          </small>
+        </div>
+      </div>
+
+
+      <!-- Campo de Correo -->
+      <div class="form-group mb-4">
+        <label for="correo" class="block text-xs font-bold mb-2 text-red-500"
+          >Correo</label
+        >
+        <input
+          type="email"
+          id="correo"
+          class="form-control"
+          formControlName="correo"
+          placeholder="Correo electrónico"
+        />
+        <!-- validacion-->
+        <div
+          *ngIf="formGroup.get('correo')?.hasError('required')"
+          class="text-danger text-sm mt-2"
+        >
+          Este campo es obligatorio
+        </div>
+        <!-- Validación formato-->
+        <div
+          *ngIf="
+            formGroup.get('correo')?.hasError('pattern') &&
+            !formGroup.get('correo')?.hasError('required')
+          "
+          class="text-danger text-sm mt-2"
+        >
+          Debe ser un correo valido
+        </div>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-center w-100 mt-3">
+        <!-- Botones de Cancelar / Guardar -->
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button
+          *ngIf="button"
+          type="button"
+          class="btn btn-primary mx-2"
+          [disabled]="formGroup.invalid"
+          (click)="onSubmit()"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
