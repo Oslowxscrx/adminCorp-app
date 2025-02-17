@@ -1,35 +1,35 @@
-// import { Injectable } from '@angular/core';
-// import { CookieService } from 'ngx-cookie-service';
-// import { EncryptionHttpService } from '../../../app/service/encryption/encryption-http.service';
+import { Injectable } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { AuthTokenDecoder } from './auth-token-decoder';
 
-// const SESSION_STORAGE_TOKEN_ACCESS_KEY = 'access_token';
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthValidator {
+  private jwtHelper = new JwtHelperService();
 
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class AuthCookieStorage {
-//   constructor(
-//     private cookieService: CookieService,
-//     private encryptionHttpService: EncryptionHttpService
-//   ) {}
+  constructor(
+    private authTokenDecoder: AuthTokenDecoder
+  ) {}
 
-//   setAccessToken(token: string): void {
-//     const encryptedToken = this.encryptionHttpService.encrypt(token);
-//     this.cookieService.set(
-//       SESSION_STORAGE_TOKEN_ACCESS_KEY,
-//       encryptedToken,
-//       { expires: 1, path: '/' } // Utiliza la opción 'expires' para configurar la expiración
-//     );
-//   }
+  isTokenValid(token: string): boolean {
+    return !!token && !this.jwtHelper.isTokenExpired(token);
+  }
 
-//   getAccessToken(): string {
-//     const encryptedToken = this.cookieService.get(
-//       SESSION_STORAGE_TOKEN_ACCESS_KEY
-//     );
-//     return encryptedToken ? this.encryptionHttpService.decrypt(encryptedToken) : '';
-//   }
+  hasPermission(token: string, permissions: string[]): boolean {
+    if (!this.isTokenValid(token)) {
+      return false;
+    }
 
-//   removeAccessToken(): void {
-//     this.cookieService.delete(SESSION_STORAGE_TOKEN_ACCESS_KEY, '/');
-//   }
-// }
+    const decodedToken = this.authTokenDecoder.decodeToken(token);
+    const permissionsUser = decodedToken?.permissions;
+
+    if (permissionsUser && permissions) {
+      return permissionsUser.some((permission: string) =>
+        permissions.includes(permission)
+      );
+    }
+
+    return false;
+  }
+}

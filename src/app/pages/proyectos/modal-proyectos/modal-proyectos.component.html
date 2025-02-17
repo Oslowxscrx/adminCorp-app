@@ -1,0 +1,83 @@
+<div class="modal-header" style="background-color: rgb(255, 255, 255);">
+  <h5 class="modal-title">{{ title }}</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <!-- Campo Título -->
+    <div class="mb-3">
+      <label for="titulo" class="form-label">Título del Proyecto</label>
+      <input
+        type="text"
+        id="titulo"
+        formControlName="titulo"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': formGroup.get('titulo')?.invalid && formGroup.get('titulo')?.touched }"
+      />
+      <div class="invalid-feedback" *ngIf="formGroup.get('titulo')?.invalid && formGroup.get('titulo')?.touched">
+        El título es obligatorio y debe tener menos de 8 caracteres.
+      </div>
+    </div>
+
+    <!-- Campo Descripción -->
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea
+        id="descripcion"
+        formControlName="descripcion"
+        class="form-control"
+        rows="3"
+        [ngClass]="{ 'is-invalid': formGroup.get('descripcion')?.invalid && formGroup.get('descripcion')?.touched }"
+      ></textarea>
+      <div class="invalid-feedback" *ngIf="formGroup.get('descripcion')?.invalid && formGroup.get('descripcion')?.touched">
+        La descripción es obligatoria.
+      </div>
+    </div>
+
+    <!-- Campo Estado -->
+    <div class="mb-3">
+      <label for="estado" class="form-label">Estado</label>
+      <select
+        id="estado"
+        formControlName="estado"
+        class="form-select"
+        [ngClass]="{ 'is-invalid': formGroup.get('estado')?.invalid && formGroup.get('estado')?.touched }"
+      >
+        <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="formGroup.get('estado')?.invalid && formGroup.get('estado')?.touched">
+        Selecciona un estado válido.
+      </div>
+    </div>
+
+    <!-- Campo Líder (Empleado) -->
+    <div class="mb-3">
+      <label for="lider" class="form-label">Líder del Proyecto</label>
+      <select
+        id="lider"
+        formControlName="nombreEmpleado"
+        class="form-select"
+        [ngClass]="{ 'is-invalid': formGroup.get('nombreEmpleado')?.invalid && formGroup.get('nombreEmpleado')?.touched }"
+      >
+        <option value="" disabled>Seleccione un líder</option>
+        <option *ngFor="let emp of empleado" [value]="emp.nombreEmpleado">{{ emp.nombreEmpleado }}</option>
+      </select>
+      <div class="invalid-feedback" *ngIf="formGroup.get('nombreEmpleado')?.invalid && formGroup.get('nombreEmpleado')?.touched">
+        Selecciona un empleado válido.
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer" style="background-color: rgb(255, 255, 255);">
+  <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    [disabled]="formGroup.invalid"
+    (click)="!currentProyecto.id ? onSubmit() : onSubmitUpdate()"
+  >
+    {{ currentProyecto.id ? 'Actualizar Proyecto' : 'Crear Proyecto' }}
+  </button>
+</div>

@@ -1,0 +1,68 @@
+<nz-layout>
+  <!-- Barra lateral -->
+  <nz-sider [nzCollapsed]="isCollapsed" [nzWidth]="200" [nzTheme]="'light'" class="custom-sider">
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="Logo" class="logo" [routerLink]="['/system/dashboard']" />
+      <span class="logo-text" *ngIf="!isCollapsed">AdminCorp</span>
+    </div>
+
+    <ul nz-menu [nzMode]="'inline'" class="menu-list">
+      <!-- Sección Menú -->
+      <li nz-menu-item class="menu-section">
+        <b class="section-title" *ngIf="!isCollapsed">Menú</b>
+        <hr *ngIf="isCollapsed" class="collapsed-divider"/>
+      </li>
+      <li nz-menu-item [routerLink]="['/system/dashboard']">
+        <span nz-icon nzType="dashboard"></span>
+        <span *ngIf="!isCollapsed">Dashboard</span>
+      </li>
+
+      <!-- Sección General -->
+      <li nz-menu-item class="menu-section">
+        <b class="section-title" *ngIf="!isCollapsed">General</b>
+        <hr *ngIf="isCollapsed" class="collapsed-divider"/>
+      </li>
+      <li nz-menu-item [routerLink]="['/system/empleados']">
+        <span nz-icon nzType="usergroup-add"></span>
+        <span *ngIf="!isCollapsed">Empleados</span>
+      </li>
+      <li nz-menu-item [routerLink]="['/system/proyectos']">
+        <span nz-icon nzType="project"></span>
+        <span *ngIf="!isCollapsed">Proyectos</span>
+      </li>
+
+      <!-- Sección Administrativo -->
+      <li nz-menu-item class="menu-section">
+        <b class="section-title" *ngIf="!isCollapsed">Administrativo</b>
+        <hr *ngIf="isCollapsed" class="collapsed-divider"/>
+      </li>
+      <li nz-menu-item [routerLink]="['/system/usuarios']">
+        <span nz-icon nzType="user-add"></span>
+        <span *ngIf="!isCollapsed">Usuarios</span>
+      </li>
+    </ul>
+  </nz-sider>
+
+  <!-- Contenedor del dashboard -->
+  <nz-layout>
+    <nz-header class="nz-header">
+      <nz-icon
+        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        nzTheme="outline"
+        class="toggle-button"
+        (click)="toggleCollapsed()"
+      ></nz-icon>
+      <div class="logout-section">
+        <button nz-button nzShape="round" (click)="logout()" class="sesion">
+          <span nz-icon nzType="user"></span>
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
+    </nz-header>
+
+    <nz-content class="content">
+      <router-outlet></router-outlet>
+    </nz-content>
+    <nz-footer class="footer">© 2024 Copyright: SiriusCompany</nz-footer>
+  </nz-layout>
+</nz-layout>

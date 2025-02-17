@@ -1,0 +1,41 @@
+<br>
+<div class="projects-container">
+  <h1>Proyectos</h1>
+  
+  <!-- Botón para abrir el modal -->
+  <button nz-button nzType="primary" (click)="openModal()">Agregar Proyecto</button>
+  
+  <hr style="margin: 50px;">
+
+  <!-- Mostrar el mensaje de vacío cuando no hay proyectos -->
+  <nz-empty *ngIf="proyectos.length === 0" nzDescription="No hay proyectos disponibles"></nz-empty>
+
+  <!-- Lista de proyectos -->
+  <div *ngIf="proyectos.length > 0" class="proyectos-list">
+    <nz-card 
+      *ngFor="let proyecto of proyectos" 
+      [nzTitle]="proyecto.titulo"
+      [nzBordered]="true" 
+      style="margin-bottom: 16px;"
+    >
+      <p><strong>Líder:</strong> {{ proyecto.lider }}</p>
+      <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
+      <p><strong>Estado:</strong> {{ proyecto.estado }}</p>
+      <button 
+        nz-button 
+        nzType="default" 
+        (click)="openModalProyecto(proyecto.id)"
+        style="margin-right: 8px;"
+      >
+        Editar
+      </button>
+      <button 
+        nz-button 
+        nzType="primary" 
+        (click)="deleteProyecto(proyecto)"
+      >
+        Eliminar
+      </button>
+    </nz-card>
+  </div>
+</div>

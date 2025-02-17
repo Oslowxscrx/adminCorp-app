@@ -9,11 +9,12 @@
       <p>Por favor ingrese sus datos</p>
     </div>
 
-    <form nz-form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <!-- Asegúrate de que esté vinculado al FormGroup -->
+    <form nz-form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <label for="usuario">Usuario</label>
       <nz-form-item>
         <nz-form-control>
-          <input nz-input id="usuario" formControlName="username" placeholder="Nombre del usuario" />
+          <input nz-input id="usuario" formControlName="userName" placeholder="Nombre del usuario" />
         </nz-form-control>
       </nz-form-item>
 
