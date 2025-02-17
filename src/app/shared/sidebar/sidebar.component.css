@@ -1,0 +1,120 @@
+/* Estilos para el sidebar */
+.custom-sider {
+  background: #e6e6fa; /* Color similar al diseño */
+  padding: 20px 0;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.logo {
+  width: 40px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #722ed1;
+}
+/* Botón para abrir/cerrar */
+.toggle-button {
+  position: absolute;
+  top: 10px;
+  left: 220px;
+  z-index: 1000;
+  font-size: 24px; /* Cambia este valor para ajustar el tamaño */
+  cursor: pointer; /* Cambia el cursor para indicar que es interactivo */
+  color: #595959; /* Color del ícono */
+  transition: transform 0.3s ease; /* Efecto suave al hacer hover */
+}
+
+.menu-list {
+  margin-top: 20px;
+  background: #e6e6fa;
+}
+
+/* Contenido principal */
+.content {
+  padding: 20px;
+  background: #f0f2f5;
+  min-height: 89vh;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  max-width: 200px;
+}
+
+.custom-sider {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Para que ocupe toda la altura */
+}
+
+.menu-list {
+  flex-grow: 1; /* Empuja el menú de usuario hacia abajo */
+}
+
+.user-menu {
+  padding: 10px;
+  text-align: center;
+  margin-top: auto; /* Envía el botón al final del sidebar */
+}
+.logout-section {
+  padding: 20px;
+  display: flex;
+  justify-content: right; /* Centra el botón en el contenedor */
+}
+.sesion{
+  background-color: #722ed1;
+  color: white;
+}
+.nz-header {
+  background: #fff;
+  padding: 0;
+}
+/* Footer */
+.footer {
+  text-align: center;
+  background: #722ed1;
+  color: white;
+  padding: 10px 0;
+}
+/* Cuando el sidebar está colapsado */
+.custom-sider.ant-layout-sider-collapsed {
+  width: 80px;
+}
+
+.custom-sider.ant-layout-sider-collapsed .logo-text {
+  display: none;
+}
+
+.custom-sider.ant-layout-sider-collapsed .menu-item {
+  justify-content: center;
+}
+
+.custom-sider.ant-layout-sider-collapsed .menu-text {
+  display: none;
+}
+
+.custom-sider.ant-layout-sider-collapsed .menu-icon {
+  font-size: 28px;
+}

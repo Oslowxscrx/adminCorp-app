@@ -22,7 +22,10 @@
     "@angular/router": "^19.0.0",
     "bootstrap-icons": "^1.11.3",
     "font-awesome": "^4.7.0",
+    "@auth0/angular-jwt": "^5.2.0",
+    "crypto-ts": "^1.0.2",
     "ng-zorro-antd": "^19.0.2",
+    "ngx-cookie-service": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
