@@ -1,10 +1,10 @@
 <div
-  class="container d-flex justify-content-center align-items-center min-vh-100"
+  class="users-container "
 >
   <div class="col-8">
     <!-- Título "Usuarios" alineado a la izquierda -->
     <div class="row mb-4">
-      <h1 class="text-start mb-5" style="font-size: 2.5rem">Usuarios</h1>
+      <h1 class="text-start mb-5">Usuarios</h1>
     </div>
 
     <!-- Fila para el botón de Agregar y barra de búsqueda separados -->
@@ -12,12 +12,9 @@
       <div class="col-auto">
         <!-- Botón Agregar con ícono -->
         <button
-          class="btn"
+          class="btn btn-primary"
           style="
-            background-color: #7597d7;
-            color: white;
             border-radius: 12px;
-            margin-bottom: 20px;
           "
           (click)="openModal()"
         >
@@ -28,7 +25,7 @@
     </div>
 
     <!-- Tabla de Usuarios usando Bootstrap -->
-    <div class="table-responsive">
+    <div class="table table-hover">
       <table class="table mt-3">
         <thead>
           <tr>
@@ -72,6 +69,7 @@
           </tr>
         </tbody>
       </table>
+      <nz-empty *ngIf="usuario.length === 0" nzDescription="No hay usuarios"></nz-empty>
     </div>
   </div>
 </div>

@@ -57,7 +57,7 @@ export class EmpleadosComponent {
 
   openModal(): void {
     const dialogRef = this._dialog.open(EmpleadoModalComponent, {
-      height: '550px',
+      height: '650px',
       width: '550px',
       data: {}  // Pasar datos necesarios al modal
     });

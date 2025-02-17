@@ -8,6 +8,7 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 interface Usuario {
   id: number;
@@ -19,7 +20,7 @@ interface Usuario {
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [NzDividerModule, NzTableModule, NzButtonModule, MatDialogModule, CommonModule, NzIconModule],
+  imports: [NzDividerModule, NzTableModule, NzButtonModule, MatDialogModule, CommonModule, NzIconModule, NzEmptyModule],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
