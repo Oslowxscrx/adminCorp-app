@@ -1,68 +1,53 @@
 import { Component } from '@angular/core';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-// import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { UserModalComponent } from './user-modal/user-modal.component';
 import { FormGroup } from '@angular/forms';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { finalize, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
-
-interface Usuario {
-  id: number;
-  nombre: string;
-  rol: string;
-  fechaCreacion: Date;
-}
-
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { User } from '../../interface/usuarios/usuarios';
+import { AuthService } from '../../service/auth.service';
+import { UsersService } from '../../service/user/user.service';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { UserModalComponent } from './user-modal/user-modal.component';
+import { UserModalDeleteComponent } from './user-modal-delete/user-modal-delete.component';
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [NzDividerModule, NzTableModule, NzButtonModule, MatDialogModule, CommonModule, NzIconModule, NzEmptyModule],
+  imports: [
+    NzDividerModule,
+    NzTableModule,
+    NzButtonModule,
+    MatDialogModule,
+    CommonModule,
+    NzIconModule,
+    NzEmptyModule,
+  ],
   templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.css']
+  styleUrls: ['./usuarios.component.css'],
 })
-
 export class UsuarioComponent {
-
-  currentRegister = {} as Usuario;
-  usuarios: Usuario[] = [];
+  usuarios: User[] = [];
   title = 'Nuevo Registro';
-  hide: boolean = true;
   loading: boolean = true;
-  passwordEntered: boolean = false;
-
-  // Tamaño del botón
-  size: 'small' | 'default' | 'large' = 'default';
-
-  public formGroup!: FormGroup;
-
-
-
-  usuarioEditando = {
-    Usuario: '',
-    rol: '',
-    fechaCreacion: ''
-  };
-
   usuario: any[] = [];
-  currentUser = {} as Usuario;
-  modalAbierto = false;
-  roles: any[] = [];
-
   constructor(
-    private _dialog: MatDialog,
-  ) { }
-
+    private _usersService: UsersService,
+    private _dialog: MatDialog
+  ) {}
+  ngOnInit(): void {
+    this.getUsuarios();
+  }
   openModal(): void {
     const dialogRef = this._dialog.open(UserModalComponent, {
-      height: '550px',
+      height: '650px',
       width: '550px',
-      data: {}  // Pasar datos necesarios al modal
+      data: {
+        /* datos que deseas pasar al componente de contenido del modal */
+      },
     });
-
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         // Realizar acciones después de cerrar el modal
@@ -70,54 +55,75 @@ export class UsuarioComponent {
     });
   }
 
-  // Función para abrir el modal de edición
   abrirModalParaEditar(userId: number): void {
     const dialogRef = this._dialog.open(UserModalComponent, {
-      height: '500px',
+      height: '700px',
       width: '550px',
       data: { userId: userId },
     });
   }
 
-  // Método para agregar un usuario
-  agregarUsuario() {
-    const nuevoUsuario = {
-      id: this.usuarios.length + 1,
-      nombre: `Nuevo Usuario ${this.usuarios.length + 1}`,
-      rol: 'User',
-      fechaCreacion: new Date()
-    };
-    this.usuarios.push(nuevoUsuario);
+  getUsuarios() {
+    this.loading = true;
+    const response = this._usersService.getUsers().subscribe({
+      next: (response: User[]) => {
+        console.log('Respuesta del servicio:', response);
+        this.handleResponse(response); // Agrega este console.log para verificar la respuesta
+        this.usuarios = response; // Asigna la respuesta a this.users
+        this.loading = false;
+      },
+
+      error: (error) => {
+        this.handleError(error);
+        console.error('Error al obtener usuarios:', error);
+        this.loading = false;
+      },
+    });
   }
 
-  // Método para ver los detalles de un usuario
-  verUsuario(id: number): void {
-    const usuario = this.usuarios.find(u => u.id === id);
-    if (usuario) {
+  private handleResponse(response: any): void {
+    this.usuario = response;
+    this.loading = false;
+  }
+
+  private handleError(error: any): void {
+    if (error.status === 404) {
+      console.error('Error al obtener usuarios:', error.error.message);
+      this.usuario = error.error.data;
     }
+    this.loading = false;
   }
-
-  // Método para editar un usuario
-  editarUsuario(id: number): void {
-    this.abrirModalParaEditar(id);
+  deleteUser(user: User): void {
+    this._usersService
+      .deleteUserById(user.id)
+      .pipe(
+        finalize(() => {
+          this.getUsuarios();
+          // this._router.navigate(['/system/usuarios']);
+        })
+      )
+      .subscribe((res: any) => {
+        if (res.status === 'success') {
+          this.handleResponse(res);
+        }
+      });
   }
+  openModalDeleteUsuario(user: User): void {
+    const dialogRef = this._dialog.open(UserModalDeleteComponent, {
+      height: '230px',
+      width: '300px',
+      data: {
+        title: '¿Está seguro de eliminar este usuario?',
+        message: 'El usuario será eliminado permanentemente del sistema.',
+        button: 'Eliminar',
+      },
+    });
 
-  // Método para eliminar un usuario
-  eliminarUsuario(id: number): void {
-    this.usuarios = this.usuarios.filter(usuario => usuario.id !== id);
-  }
-
-  // Método para formatear la fecha
-  obtenerFechaActual(): string {
-    const fecha = new Date();
-    return fecha.toISOString();
-  }
-
-  limpiarFormulario(): void {
-    this.usuarioEditando = {
-      Usuario: '',
-      rol: '',
-      fechaCreacion: ''
-    };
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        // Verifica si el usuario confirmó la eliminación
+        this.deleteUser(user);
+      }
+    });
   }
 }

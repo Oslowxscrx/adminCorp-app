@@ -1,0 +1,57 @@
+<div class="modal-body">
+  <div class="container">
+    <!-- Modal Header -->
+    <div class="modal-header d-flex justify-content-center w-100">
+      <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
+    </div>
+    <form [formGroup]="formGroup">
+      <!-- Campo de Nombre Área -->
+      <div class="form-group mb-4">
+        <label for="nombreArea" class="block text-xs font-bold mb-2 text-red-500">Nombre Área</label>
+        <input
+          type="text"
+          id="nombreArea"
+          class="form-control"
+          formControlName="nombreArea"
+          placeholder="Nombre del Área"
+          maxlength="50"
+        />
+        <div *ngIf="formGroup.get('nombreArea')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('nombreArea')?.hasError('required')">El nombre del área es obligatorio.</small>
+          <small *ngIf="formGroup.get('nombreArea')?.hasError('minlength')">El nombre es muy corto.</small>
+          <small *ngIf="formGroup.get('nombreArea')?.hasError('maxlength')">El nombre es muy largo.</small>
+        </div>
+      </div>
+
+      <!-- Campo de Descripción Área -->
+      <div class="form-group mb-4">
+        <label for="descripcionArea" class="block text-xs font-bold mb-2 text-red-500">Descripción Área</label>
+        <input
+          type="text"
+          id="descripcionArea"
+          class="form-control"
+          formControlName="descripcionArea"
+          placeholder="Descripción del Área"
+          maxlength="100"
+        />
+        <div *ngIf="formGroup.get('descripcionArea')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('descripcionArea')?.hasError('required')">La descripción es obligatoria.</small>
+          <small *ngIf="formGroup.get('descripcionArea')?.hasError('maxlength')">La descripción es demasiado larga.</small>
+        </div>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-center w-100 mt-3">
+        <!-- Botones de Cancelar / Guardar -->
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="formGroup.invalid"
+        (click)="!currentArea.id ? onSubmit() : onSubmitUpdate()"
+      >
+        {{ currentArea.id ? "Actualizar Área" : "Crear Área" }}
+      </button>
+      </div>
+    </form>
+  </div>
+</div>

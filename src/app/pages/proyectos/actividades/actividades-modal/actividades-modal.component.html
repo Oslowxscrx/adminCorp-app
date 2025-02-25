@@ -1,0 +1,151 @@
+<div class="modal-body">
+  <div class="container">
+    <div class="modal-header d-flex justify-content-center w-100">
+      <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
+    </div>
+
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <!-- Campo Título -->
+      <div class="mb-3">
+        <label for="nombreActividad" class="form-label">Nombre de la Actividad</label>
+        <input
+          type="text"
+          id="nombreActividad"
+          formControlName="nombreActividad"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('nombreActividad')?.invalid &&
+              formGroup.get('nombreActividad')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('nombreActividad')?.invalid && formGroup.get('nombreActividad')?.touched
+          "
+        >
+          El título es obligatorio y debe tener menos de 8 caracteres.
+        </div>
+      </div>
+
+      <!-- Campo Descripción -->
+      <div class="mb-3">
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea
+          id="descripcion"
+          formControlName="descripcion"
+          class="form-control"
+          rows="3"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('descripcion')?.invalid &&
+              formGroup.get('descripcion')?.touched
+          }"
+        ></textarea>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('descripcion')?.invalid &&
+            formGroup.get('descripcion')?.touched
+          "
+        >
+          La descripción es obligatoria.
+        </div>
+      </div>
+
+      <!-- Campo Estado -->
+      <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <select
+          id="estado"
+          formControlName="estado"
+          class="form-select"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('estado')?.invalid &&
+              formGroup.get('estado')?.touched
+          }"
+        >
+          <option *ngFor="let estado of estados" [value]="estado">
+            {{ estado }}
+          </option>
+        </select>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('estado')?.invalid && formGroup.get('estado')?.touched
+          "
+        >
+          Selecciona un estado válido.
+        </div>
+      </div>
+
+      <!-- Campo asigando (usuario) -->
+      <div class="mb-3">
+        <label for="asignado" class="form-label">Líder del Proyecto</label>
+        <select
+          id="asignado"
+          formControlName="asignado"
+          class="form-select"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('asignado')?.invalid &&
+              formGroup.get('asignado')?.touched
+          }"
+        >
+          <option value="" disabled>Seleccione un Usuario</option>
+          <option *ngFor="let emp of user" [value]="emp.firstName">
+            {{ emp.firstName }}
+          </option>
+        </select>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('asignado')?.invalid && formGroup.get('asignado')?.touched
+          "
+        >
+          Selecciona un empleado válido.
+        </div>
+      </div>
+
+      <!-- Campo Fecha de Entrega -->
+      <div class="mb-3">
+        <label for="tiempoEntrega" class="form-label">Fecha de Entrega</label>
+        <input
+        type="date"
+        id="tiempoEntrega"
+        formControlName="tiempoEntrega"
+        class="form-control"
+        [ngClass]="{
+          'is-invalid': formGroup.get('tiempoEntrega')?.invalid &&
+                        formGroup.get('tiempoEntrega')?.touched
+        }"
+      />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('tiempoEntrega')?.invalid &&
+            formGroup.get('tiempoEntrega')?.touched
+          "
+        >
+          Selecciona una fecha válida.
+        </div>
+      </div>
+    </form>
+  </div>
+  <br />
+  <div class="modal-footer d-flex justify-content-center w-100 mt-3">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="formGroup.invalid"
+      (click)="!currentActividad.id ? onSubmit() : onSubmitUpdate()"
+    >
+      {{ currentActividad.id ? "Actualizar Proyecto" : "Crear Proyecto" }}
+    </button>
+  </div>
+</div>

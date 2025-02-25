@@ -1,6 +1,12 @@
+import { RoleEnum } from "../../enums/role";
+
 export interface User {
   id:number;
-  nombreUsuario: string;
-  correo: string;
+  username: string;
+  firstName: string;
+  lastName: string
   password:string;
+  role: RoleEnum
+  createAt: Date;
+  deleteAt: Date;
 }

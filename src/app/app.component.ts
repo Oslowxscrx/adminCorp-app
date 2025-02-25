@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { Router, NavigationEnd } from '@angular/router';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ RouterOutlet, SidebarComponent, NzLayoutModule],
+  imports: [RouterOutlet, SidebarComponent, NzLayoutModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'adminCorpApp';

@@ -1,13 +1,15 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { ProyectosComponent } from './pages/proyectos/proyectos.component';
-import { LoginGuard } from './guards/login.guard';
 import { AuthGuard } from './guards/auth.guard';
+import { LoginGuard } from './guards/login.guard';
+import { LoginComponent } from './auth/login/login.component';
 import { NotFoundComponent } from './errors/not-found.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { UsuarioComponent } from './pages/usuarios/usuarios.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ProyectosComponent } from './pages/proyectos/proyectos.component';
 import { EmpleadosComponent } from './pages/empleados/empleados.component';
+import { ActividadesComponent } from './pages/proyectos/actividades/actividades.component';
+import { AreaComponent } from './pages/area/area.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
@@ -25,10 +27,12 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'area', component: AreaComponent },
+      { path: 'empleados', component: EmpleadosComponent },
       { path: 'proyectos', component: ProyectosComponent },
+      { path: 'actividades', component: ActividadesComponent },
       { path: 'usuarios', component: UsuarioComponent },
-      { path: 'empleados', component: EmpleadosComponent},
-    ]
+    ],
   },
-  { path: '**', component: NotFoundComponent }
+  { path: '**', component: NotFoundComponent },
 ];

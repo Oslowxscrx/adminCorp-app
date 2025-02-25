@@ -1,11 +1,12 @@
-import { Employee } from "../employee/employee";
+import { User } from "../usuarios/usuarios";
 
 export interface Proyecto {
   id:number;
   titulo:string;
-  lider:Employee;
+  leader:User;
   descripcion:string;
   estado:string;
+  color?: string;
   createAt: Date;
   deleteAt: Date;
 }

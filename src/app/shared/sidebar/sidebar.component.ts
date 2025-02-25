@@ -1,23 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NzMenuModule, NzSubMenuComponent} from 'ng-zorro-antd/menu';
+import { RouterModule } from '@angular/router';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { Router, RouterModule } from '@angular/router';
-import { NzDividerModule } from 'ng-zorro-antd/divider'; 
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { AuthService } from '../../service/auth.service';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzIconModule, NzIconService } from 'ng-zorro-antd/icon';
-import { 
-  AppstoreOutline, 
-  MenuFoldOutline, 
-  ProjectOutline, 
-  UserAddOutline, 
+import {
+  AppstoreOutline,
+  MenuFoldOutline,
+  ProjectOutline,
+  UserAddOutline,
   UsergroupAddOutline,
   UserOutline,
-  DashboardOutline
+  DashboardOutline,
+  AreaChartOutline,
 } from '@ant-design/icons-angular/icons';
-import { AuthService } from '../../service/auth.service';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @Component({
   selector: 'app-sidebar',
@@ -34,32 +35,37 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
     NzDropDownModule,
     NzBreadCrumbModule,
     NzButtonModule,
-  ],
+  ]
 })
-export class SidebarComponent{
+export class SidebarComponent {
   isCollapsed = false;
+  isLogoutExpanded = false;
   constructor(
-    private iconService: NzIconService, 
-    private router: Router,
+    private iconService: NzIconService,
     private authService: AuthService
-  ) 
-  {
+  ) {
     this.iconService.addIcon(
       MenuFoldOutline,
       ProjectOutline,
       UsergroupAddOutline,
       AppstoreOutline,
-      UserAddOutline, 
+      UserAddOutline,
       UserOutline,
-      DashboardOutline
+      DashboardOutline,
+      AreaChartOutline
     );
   }
   // Método para cerrar sesión
   logout(): void {
-    this.authService.logout();  // Llama al servicio para cerrar sesión
+    this.authService.logout(); // Llama al servicio para cerrar sesión
     // Redirige a la página de login o cualquier otra página que desees
+    window.location.reload(); // Recarga la página
+    
   }
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed;
+  }
+  toggleLogout(): void {
+    this.isLogoutExpanded = !this.isLogoutExpanded;
   }
 }

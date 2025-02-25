@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { AuthSessionStorage } from '../../auth/validator/auth-session-storage';
 import {
   HttpInterceptor,
   HttpRequest,
@@ -6,15 +9,10 @@ import {
   HttpEvent,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { AuthSessionStorage } from '../../auth/validator/auth-session-storage';
-import { AuthService } from '../../service/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
-    private authHttpService: AuthService,
     private authSessionStorage: AuthSessionStorage
   ) {}
 

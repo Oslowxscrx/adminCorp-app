@@ -1,11 +1,10 @@
+import { AES, enc } from 'crypto-ts';
 import { Injectable } from '@angular/core';
-import { AES, enc } from 'crypto-ts'; // Importa AES y enc de crypto-ts
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EncryptionHttpService {
-
   private key = enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
   private iv = enc.Hex.parse('101112131415161718191a1b1c1d1e1f');
 

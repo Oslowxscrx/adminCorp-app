@@ -1,5 +1,14 @@
 .empleados-container{
   padding: 40px;
-  background-color: #f9f9f9;
+  background-color: #efe0f8;
   border-radius: 8px;
+}
+.table-container {
+  margin: 0 auto; /* Centrar la tabla */
+  width: 100%;
+  max-width: 1200px; /* Ajusta el ancho máximo según sea necesario */
+}
+
+.table-container nz-table {
+  width: 100%;
 }

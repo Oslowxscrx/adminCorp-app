@@ -1,0 +1,62 @@
+<div class="area-container">
+  <div class="row mb-4">
+    <h1 nz-typography nzTitle class="text-start mb-5" style="font-size: 2.5rem">
+      Áreas de Trabajo
+    </h1>
+  </div>
+
+  <!-- Botón para agregar área -->
+  <div class="row mb-3 d-flex justify-content-between">
+    <div class="col-auto">
+      <button
+        nz-button
+        nzType="primary"
+        nzShape="round"
+        (click)="openModal()"
+      >
+        Agregar
+      </button>
+    </div>
+  </div>
+  <br />
+  <hr />
+
+  <!-- Tabla de áreas -->
+  <nz-table #basicTable [nzBordered]="true" [nzData]="area" [nzSize]="'middle'" [nzFrontPagination]="false">
+    <thead>
+      <tr>
+        <th>Nombre de Área</th>
+        <th>Descripción de Área</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let area of area">
+        <td>{{ area.nombreArea }}</td>
+        <td>{{ area.descripcionArea }}</td>
+        <td>
+          <button
+            nz-button
+            nzType="primary"
+            nzShape="circle"
+            (click)="openModalArea(area.id)"
+          >
+            <span nz-icon nzType="edit"></span>
+          </button>
+        </td>
+        <td>
+          <button
+            nz-button
+            nzType="default"
+            nzDanger
+            nzShape="circle"
+            (click)="openModalDeleteArea(area)"
+          >
+            <span nz-icon nzType="delete"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

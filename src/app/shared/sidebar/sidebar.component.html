@@ -1,8 +1,18 @@
 <nz-layout>
   <!-- Barra lateral -->
-  <nz-sider [nzCollapsed]="isCollapsed" [nzWidth]="200" [nzTheme]="'light'" class="custom-sider">
+  <nz-sider
+    [nzCollapsed]="isCollapsed"
+    [nzWidth]="200"
+    [nzTheme]="'light'"
+    class="custom-sider"
+  >
     <div class="logo-container">
-      <img src="assets/logo.png" alt="Logo" class="logo" [routerLink]="['/system/dashboard']" />
+      <img
+        src="assets/logo.png"
+        alt="Logo"
+        class="logo"
+        [routerLink]="['/system/dashboard']"
+      />
       <span class="logo-text" *ngIf="!isCollapsed">AdminCorp</span>
     </div>
 
@@ -10,7 +20,7 @@
       <!-- Sección Menú -->
       <li nz-menu-item class="menu-section">
         <b class="section-title" *ngIf="!isCollapsed">Menú</b>
-        <hr *ngIf="isCollapsed" class="collapsed-divider"/>
+        <hr *ngIf="isCollapsed" class="collapsed-divider" />
       </li>
       <li nz-menu-item [routerLink]="['/system/dashboard']">
         <span nz-icon nzType="dashboard"></span>
@@ -20,7 +30,11 @@
       <!-- Sección General -->
       <li nz-menu-item class="menu-section">
         <b class="section-title" *ngIf="!isCollapsed">General</b>
-        <hr *ngIf="isCollapsed" class="collapsed-divider"/>
+        <hr *ngIf="isCollapsed" class="collapsed-divider" />
+      </li>
+      <li nz-menu-item [routerLink]="['/system/area']">
+        <span nz-icon nzType="area-chart"></span>
+        <span *ngIf="!isCollapsed">Area</span>
       </li>
       <li nz-menu-item [routerLink]="['/system/empleados']">
         <span nz-icon nzType="usergroup-add"></span>
@@ -34,7 +48,7 @@
       <!-- Sección Administrativo -->
       <li nz-menu-item class="menu-section">
         <b class="section-title" *ngIf="!isCollapsed">Administrativo</b>
-        <hr *ngIf="isCollapsed" class="collapsed-divider"/>
+        <hr *ngIf="isCollapsed" class="collapsed-divider" />
       </li>
       <li nz-menu-item [routerLink]="['/system/usuarios']">
         <span nz-icon nzType="user-add"></span>
@@ -44,7 +58,7 @@
   </nz-sider>
 
   <!-- Contenedor del dashboard -->
-  <nz-layout>
+  <nz-layout >
     <nz-header class="nz-header">
       <nz-icon
         [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
@@ -53,14 +67,19 @@
         (click)="toggleCollapsed()"
       ></nz-icon>
       <div class="logout-section">
-        <button nz-button nzShape="round" (click)="logout()" class="sesion">
-          <span nz-icon nzType="user"></span>
-          <span>Cerrar sesión</span>
-        </button>
+        <div class="dropdown">
+          <button class="btn sesion dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person"></i>
+            <span *ngIf="!isCollapsed">Usuario</span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+            <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+          </ul>
+        </div>
       </div>
     </nz-header>
 
-    <nz-content class="content">
+    <nz-content class="content" style="margin-left: 200px;">
       <router-outlet></router-outlet>
     </nz-content>
     <nz-footer class="footer">© 2024 Copyright: SiriusCompany</nz-footer>

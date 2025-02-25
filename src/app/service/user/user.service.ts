@@ -1,45 +1,44 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../enviroments/enviroments';
+import { Injectable } from '@angular/core';
 import { User } from '../../interface/usuarios/usuarios';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../enviroments/enviroments';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsersService {
-
-  private apiUrl = environment.API_URL + 'users';
+  private API_URL = environment.API_URL + '/admincorp/users'; // Aquí se concatena la ruta específica para los usuarios
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-  }; 
+  };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl,
-    this.httpOptions);
+    return this.http.get<User[]>(this.API_URL, this.httpOptions);
   }
 
   public getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
+    return this.http.get<User>(`${this.API_URL}/${id}`);
   }
-
 
   createUser(user: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, user);
+    return this.http.post<any>(this.API_URL, user, this.httpOptions);
   }
 
-  public updateUsuario(usuario: User): Observable<User> {
+  updateUser(user: User): Observable<User> {
     return this.http.put<User>(
-      `${this.apiUrl}/${usuario.id}`,
-      usuario,
+      `${this.API_URL}/${user.id}`,
+      user,
       this.httpOptions
     );
   }
 
-  deleteUser(id: number): Observable<any> {
-    const url = `${this.apiUrl}/${id}`;
-    return this.http.delete<any>(url);
+  public deleteUserById(userId: number): Observable<User> {
+    return this.http.delete<User>(
+      `${this.API_URL}/${userId}`,
+      this.httpOptions
+    );
   }
 }

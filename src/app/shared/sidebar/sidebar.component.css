@@ -1,7 +1,14 @@
 /* Estilos para el sidebar */
 .custom-sider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   background: #e6e6fa; /* Color similar al diseño */
   padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
 }
 
 .logo-container {
@@ -20,7 +27,7 @@
 .logo-text {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #722ed1;
+  color: #9f67ee;
 }
 /* Botón para abrir/cerrar */
 .toggle-button {
@@ -37,6 +44,7 @@
 .menu-list {
   margin-top: 20px;
   background: #e6e6fa;
+  flex-grow: 1; 
 }
 
 /* Contenido principal */
@@ -79,14 +87,15 @@
   margin-top: auto; /* Envía el botón al final del sidebar */
 }
 .logout-section {
-  padding: 20px;
+  padding-right: 10px;
   display: flex;
   justify-content: right; /* Centra el botón en el contenedor */
 }
 .sesion{
-  background-color: #722ed1;
+  background-color: #9f67ee;
   color: white;
 }
+
 .nz-header {
   background: #fff;
   padding: 0;
@@ -94,7 +103,7 @@
 /* Footer */
 .footer {
   text-align: center;
-  background: #722ed1;
+  background: #9f67ee;
   color: white;
   padding: 10px 0;
 }
@@ -117,4 +126,39 @@
 
 .custom-sider.ant-layout-sider-collapsed .menu-icon {
   font-size: 28px;
+}
+/* Media queries para hacer el sidebar responsive */
+@media (max-width: 768px) {
+  .custom-sider {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .toggle-button {
+    left: 10px;
+  }
+
+  .menu-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .user-menu {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo-text {
+    font-size: 1rem;
+  }
+
+  .toggle-button {
+    font-size: 20px;
+  }
+
+  .menu-icon {
+    font-size: 24px;
+  }
 }

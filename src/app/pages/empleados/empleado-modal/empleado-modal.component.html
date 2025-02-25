@@ -1,14 +1,10 @@
-
-<div class="modal-dialog modal-lg modal-dialog-centered"></div>
-<div class="container">
-  <!-- Modal Header -->
-  <div class="modal-header d-flex justify-content-center w-100">
-    <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
-  </div>
-
-  <div class="modal-body">
-    <form [formGroup]="formGroup" novalidate>
-
+<div class="modal-body">
+  <div class="container">
+    <!-- Modal Header -->
+    <div class="modal-header d-flex justify-content-center w-100">
+      <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
+    </div>
+    <form [formGroup]="formGroup">
       <!-- Campo de Cédula -->
       <div class="form-group mb-4">
         <label for="cedula" class="block text-xs font-bold mb-2 text-red-500"
@@ -24,7 +20,10 @@
           inputmode="numeric"
           (keypress)="allowOnlyNumbers($event)"
         />
-        <div *ngIf="formGroup.get('cedula')?.errors" class="text-danger text-sm mt-2">
+        <div
+          *ngIf="formGroup.get('cedula')?.errors"
+          class="text-danger text-sm mt-2"
+        >
           <small *ngIf="formGroup.get('cedula')?.hasError('required')">
             La cédula es obligatoria.
           </small>
@@ -39,22 +38,27 @@
 
       <!-- Campo de Nombre -->
       <div class="form-group mb-4">
-        <label for="nombre" class="block text-xs font-bold mb-2 text-red-500"
+        <label
+          for="nombreEmpleado"
+          class="block text-xs font-bold mb-2 text-red-500"
           >Nombre</label
         >
         <input
           type="text"
-          id="nombre"
+          id="nombreEmpleado"
           class="form-control"
-          formControlName="nombre"
+          formControlName="nombreEmpleado"
           placeholder="Nombre"
           maxlength="20"
         />
-        <div *ngIf="formGroup.get('nombre')?.errors" class="text-danger text-sm mt-2">
-          <small *ngIf="formGroup.get('nombre')?.hasError('required')">
+        <div
+          *ngIf="formGroup.get('nombreEmpleado')?.errors"
+          class="text-danger text-sm mt-2"
+        >
+          <small *ngIf="formGroup.get('nombreEmpleado')?.hasError('required')">
             El nombre es obligatorio.
           </small>
-          <small *ngIf="formGroup.get('nombre')?.hasError('maxlength')">
+          <small *ngIf="formGroup.get('nombreEmpleado')?.hasError('maxlength')">
             El nombre no debe exceder los 20 caracteres.
           </small>
         </div>
@@ -62,43 +66,53 @@
 
       <!-- Campo de Apellido -->
       <div class="form-group mb-4">
-        <label for="apellido" class="block text-xs font-bold mb-2 text-red-500"
+        <label
+          for="apellidoEmpleado"
+          class="block text-xs font-bold mb-2 text-red-500"
           >Apellido</label
         >
         <input
           type="text"
-          id="apellido"
+          id="apellidoEmpleado"
           class="form-control"
-          formControlName="apellido"
+          formControlName="apellidoEmpleado"
           placeholder="Apellido"
           maxlength="20"
         />
-        <div *ngIf="formGroup.get('apellido')?.errors" class="text-danger text-sm mt-2">
-          <small *ngIf="formGroup.get('apellido')?.hasError('required')">
+        <div
+          *ngIf="formGroup.get('apellidoEmpleado')?.errors"
+          class="text-danger text-sm mt-2"
+        >
+          <small
+            *ngIf="formGroup.get('apellidoEmpleado')?.hasError('required')"
+          >
             El apellido es obligatorio.
           </small>
-          <small *ngIf="formGroup.get('apellido')?.hasError('maxlength')">
+          <small
+            *ngIf="formGroup.get('apellidoEmpleado')?.hasError('maxlength')"
+          >
             El apellido no debe exceder los 20 caracteres.
           </small>
         </div>
       </div>
 
-
       <!-- Campo de Correo -->
       <div class="form-group mb-4">
-        <label for="correo" class="block text-xs font-bold mb-2 text-red-500"
+        <label
+          for="correoEmpleado"
+          class="block text-xs font-bold mb-2 text-red-500"
           >Correo</label
         >
         <input
           type="email"
-          id="correo"
+          id="correoEmpleado"
           class="form-control"
-          formControlName="correo"
+          formControlName="correoEmpleado"
           placeholder="Correo electrónico"
         />
         <!-- validacion-->
         <div
-          *ngIf="formGroup.get('correo')?.hasError('required')"
+          *ngIf="formGroup.get('correoEmpleado')?.hasError('required')"
           class="text-danger text-sm mt-2"
         >
           Este campo es obligatorio
@@ -106,8 +120,8 @@
         <!-- Validación formato-->
         <div
           *ngIf="
-            formGroup.get('correo')?.hasError('pattern') &&
-            !formGroup.get('correo')?.hasError('required')
+            formGroup.get('correoEmpleado')?.hasError('pattern') &&
+            !formGroup.get('correoEmpleado')?.hasError('required')
           "
           class="text-danger text-sm mt-2"
         >
@@ -121,13 +135,20 @@
           Cancelar
         </button>
         <button
-          *ngIf="button"
+          *ngIf="button === true"
           type="button"
-          class="btn btn-primary mx-2"
-          [disabled]="formGroup.invalid"
+          class="btn btn-primary"
           (click)="onSubmit()"
         >
-          Guardar
+          Crear
+        </button>
+        <button
+          *ngIf="button === false"
+          type="button"
+          class="btn btn-primary"
+          (click)="onSubmitUpdate()"
+        >
+          Actualizar
         </button>
       </div>
     </form>

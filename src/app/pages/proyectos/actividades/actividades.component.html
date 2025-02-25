@@ -1,0 +1,47 @@
+<div class="actividades-container">
+  <h1>Actividades</h1>
+  <br />
+  <br />
+  <!-- Botón para abrir el modal -->
+  <button nz-button nzType="primary" nzShape="round" (click)="openModal()">
+    Agregar
+  </button>
+
+  <hr style="margin: 50px" />
+
+  <!-- Mostrar el mensaje de vacío cuando no hay proyectos -->
+  <nz-empty
+    *ngIf="actividades.length === 0"
+    nzDescription="No hay proyectos disponibles"
+  ></nz-empty>
+
+  <!-- Lista de proyectos -->
+  <div *ngIf="actividades.length > 0" class="proyectos-list">
+    <div class="row">
+      <div class="col-md-4" *ngFor="let actividad of actividades">
+        <nz-card
+        style="border-radius: 5px;"
+          [nzTitle]="actividad.nombreActividad"
+          [nzBordered]="true"
+          [ngStyle]="{'background-color': actividad.color}"
+        >
+          <p><strong>Asigando:</strong> {{ actividad.asignado }}</p>
+          <p><strong>Descripción:</strong> {{ actividad.descripcion }}</p>
+          <p><strong>Estado:</strong> {{ actividad.estado }}</p>
+          <p><strong>Tiempo de Entrega:</strong> {{ actividad.tiempoEntrega }}</p>
+          <button
+            nz-button
+            nzType="default"
+            (click)="openModalActividad(actividad.id)"
+            style="margin-right: 8px"
+          >
+            Editar
+          </button>
+          <button nz-button nzType="primary">
+            Eliminar
+          </button>
+        </nz-card>
+      </div>
+    </div>
+  </div>
+</div>

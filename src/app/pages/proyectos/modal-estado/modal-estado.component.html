@@ -1,0 +1,13 @@
+<div class="modal-body">
+  <div class="progress-modal">
+    <h2>Actualizar Progreso</h2>
+    <nz-progress [nzPercent]="percent" nzType="circle" style="padding-right: 10px;"></nz-progress>
+    <nz-button-group>
+      <button nz-button (click)="decline()"><span nz-icon nzType="minus"></span></button>
+      <button nz-button (click)="increase()"><span nz-icon nzType="plus"></span ></button>
+    </nz-button-group>
+    <div class="modal-footer">
+      <button nz-button nzType="default" (click)="close()">Cerrar</button>
+    </div>
+  </div>
+</div>

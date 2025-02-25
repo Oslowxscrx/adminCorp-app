@@ -10,11 +10,27 @@
     </div>
 
     <!-- Asegúrate de que esté vinculado al FormGroup -->
-    <form nz-form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <form
+      nz-form
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+      class="login-form"
+    >
+      <!-- Alerta de credenciales incorrectas -->
+      <div *ngIf="loginError" class="alert alert-danger" role="alert">
+        Credenciales incorrectas. Por favor, inténtelo de nuevo.
+      </div>
+
       <label for="usuario">Usuario</label>
       <nz-form-item>
         <nz-form-control>
-          <input nz-input id="usuario" formControlName="userName" placeholder="Nombre del usuario" />
+          <input
+            nz-input
+            id="usuario"
+            formControlName="userName"
+            placeholder="Nombre del usuario"
+            [ngClass]="{ 'is-invalid': loginForm.controls['userName'].invalid && loginForm.controls['userName'].touched }"
+          />
         </nz-form-control>
       </nz-form-item>
 
@@ -27,13 +43,21 @@
             type="password"
             formControlName="password"
             placeholder="**********"
+            [ngClass]="{
+              'is-invalid':
+                loginForm.controls['password'].invalid &&
+                loginForm.controls['password'].touched
+            }"
           />
         </nz-form-control>
       </nz-form-item>
 
-      <a class="forgot-password">¿Olvidaste tu contraseña?</a>
-
-      <button nz-button nzType="primary" [disabled]="!loginForm.valid" class="submit-btn">
+      <button
+        nz-button
+        nzType="primary"
+        [disabled]="!loginForm.valid"
+        class="button-sesion"
+      >
         Iniciar sesión
       </button>
     </form>

@@ -1,0 +1,19 @@
+<div class="modal-body d-flex justify-content-center align-items-center">
+  <div role="alert">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-exclamation-circle fa-3x text-warning me-3"></i>
+      <div>
+        <strong class="text-danger fs-5">{{ data.title }}</strong>
+        <p class="mb-0">{{ data.message }}</p>
+      </div>
+    </div>
+    <div class="mt-4 d-flex justify-content-center gap-3">
+      <button class="btn btn-secondary mr-2" (click)="closeModal()">
+        Cancelar
+      </button>
+      <button (click)="confirmDelete()" class="btn btn-danger px-4">
+        <i class="fas fa-trash-alt"></i> {{ data.button }}
+      </button>
+    </div>
+  </div>
+</div>

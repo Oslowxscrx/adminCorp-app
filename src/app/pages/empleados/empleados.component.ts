@@ -1,65 +1,75 @@
+import { finalize } from 'rxjs';
 import { Component } from '@angular/core';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-// import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { EmpleadoModalComponent } from './empleado-modal/empleado-modal.component';
-import { FormGroup } from '@angular/forms';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTableModule } from 'ng-zorro-antd/table';
-
-interface Empleado {
-  id: number;
-  cedula: string;
-  nombre: string;
-  apellido: string;
-  correo: string;
-  fechaCreacion: Date;
-}
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { Employee } from '../../interface/employee/employee';
+import { EmpleadosService } from '../../service/empleados.service';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { EmpleadoModalComponent } from './empleado-modal/empleado-modal.component';
+import { EmpleadoModalDeleteComponent } from './empleado-modal-delete/empleado-modal-delete.component';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 @Component({
   selector: 'app-empleado',
   standalone: true,
-  imports: [NzDividerModule, NzTableModule, NzButtonModule, MatDialogModule, CommonModule, NzIconModule],
+  imports: [
+    NzDividerModule,
+    NzTableModule,
+    NzButtonModule,
+    MatDialogModule,
+    CommonModule,
+    NzIconModule,
+    NzEmptyModule
+  ],
   templateUrl: './empleados.component.html',
-  styleUrls: ['./empleados.component.css']
+  styleUrls: ['./empleados.component.css'],
 })
-
 export class EmpleadosComponent {
-
-  currentRegister = {} as Empleado;
-  empleados: Empleado[] = [];
-  title = 'Nuevo Registro';
-  hide: boolean = true;
+  empleados: Employee[] = [];
   loading: boolean = true;
 
-  // Tamaño del botón
-  size: 'small' | 'default' | 'large' = 'default';
-
-  public formGroup!: FormGroup;
-
-  empleadoEditando = {
-    cedula: '',
-    nombre: '',
-    apellido: '',
-    correo: '',
-    fechaCreacion: ''
-  };
-
-  empleado: any[] = [];
-  currentEmpleado = {} as Empleado;
-  modalAbierto = false;
-
   constructor(
-    private _dialog: MatDialog,
-  ) { }
+    private _empleadoService: EmpleadosService,
+    private _dialog: MatDialog
+  ) {}
+  ngOnInit(): void {
+    this.getEmpleado();
+  }
+  getEmpleado() {
+    this.loading = true;
+    this._empleadoService.getEmployees().subscribe({
+      next: (response: Employee[]) => {
+        console.log('empleados', response);
+        this.handleResponse(response);
+      },
+      error: (error) => {
+        this.handleError(error);
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
+  }
+  private handleResponse(response: any): void {
+    this.empleados = response;
+    this.loading = false;
+  }
 
+  private handleError(error: any): void {
+    if (error.status === 404) {
+      console.error('Error al obtener horario:', error.error.message);
+      this.empleados = error.error.data;
+    }
+    this.loading = false;
+  }
   openModal(): void {
     const dialogRef = this._dialog.open(EmpleadoModalComponent, {
-      height: '650px',
+      height: '625px',
       width: '550px',
-      data: {}  // Pasar datos necesarios al modal
+      data: {}, // Pasar datos necesarios al modal
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -77,50 +87,35 @@ export class EmpleadosComponent {
       data: { empleadoId: empleadoId },
     });
   }
-
-  // Método para agregar un usuario
-  agregarEmpleado() {
-    const nuevoEmpleado: Empleado = {
-      id: this.empleados.length + 1,
-      nombre: `Nuevo Empleado ${this.empleados.length + 1}`,
-      cedula: '',
-      apellido: '',
-      correo: '',
-      fechaCreacion: new Date()
-    };
-    this.empleados.push(nuevoEmpleado);
+  deleteEmpleado(empleado: Employee): void {
+    this._empleadoService
+      .deleteEmployeeById(empleado.id)
+      .pipe(
+        finalize(() => {
+          this.getEmpleado();
+          // this._router.navigate(['/system/usuarios']);
+        })
+      )
+      .subscribe((res: any) => {
+        if (res.status === 'success') {
+          this.handleResponse(res);
+        }
+      });
   }
-
-  // Método para ver los detalles de un empleado
-  verEmpleado(id: number): void {
-    const empleado = this.empleados.find(u => u.id === id);
-    if (empleado) {
-    }
-  }
-
-  // Método para editar un empleado
-  editarEmpleado(id: number): void {
-    this.abrirModalParaEditar(id);
-  }
-
-  // Método para eliminar un empleado
-  eliminarEmpleado(id: number): void {
-    this.empleados = this.empleados.filter(empleado => empleado.id !== id);
-  }
-
-   // Método para formatear la fecha
-   obtenerFechaActual(): string {
-    const fecha = new Date();
-    return fecha.toISOString();
-  }
-
-  limpiarFormulario(): void {
-    this.empleadoEditando = {
-      cedula: '',
-      nombre:'',
-      apellido: '',
-      correo: '',
-      fechaCreacion: ''
-    };
+  openModalDeleteUsuario(empleado: Employee): void {
+    const dialogRef = this._dialog.open(EmpleadoModalDeleteComponent, {
+      height: '230px',
+      width: '300px',
+      data: {
+        title: '¿Está seguro de eliminar este empleado?',
+        message: 'El empleado será eliminado permanentemente del sistema.',
+        button: 'Eliminar',
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.deleteEmpleado(empleado);
+      }
+    });
   }
 }

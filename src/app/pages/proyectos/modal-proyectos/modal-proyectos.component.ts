@@ -1,15 +1,19 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
-import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ProyectosService } from '../../../service/proyectos.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Proyecto } from '../../../interface/proyectos/proyectos';
 import { Subscription } from 'rxjs';
-import { EmpleadosService } from '../../../service/empleados.service';
-import { Employee } from '../../../interface/employee/employee';
-import { ModalService } from '../../../service/modal/modal.service';
 import { CommonModule } from '@angular/common';
+import { User } from '../../../interface/usuarios/usuarios';
+import { Proyecto } from '../../../interface/proyectos/proyectos';
+import { UsersService } from '../../../service/user/user.service';
+import { ModalService } from '../../../service/modal/modal.service';
+import { ProyectosService } from '../../../service/proyectos.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  FormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-modal-proyectos',
@@ -20,32 +24,44 @@ import { CommonModule } from '@angular/common';
 })
 export class ModalProyectosComponent implements OnInit {
   currentProyecto = {} as Proyecto;
-  empleado: Employee[] = [];
+  user: User[] = [];
   title = 'Nuevo Proyecto';
   hide: boolean = true;
   paramsSubscription!: Subscription;
   loading: boolean = true;
   button: boolean = true;
-
-  estados = ['0%', '10%', '20%', '30%', '40%'];
-  formGroup!: FormGroup;  // Formulario para validar y gestionar los datos
+  formGroup!: FormGroup;
+  estados = [
+    '0%',
+    '10%',
+    '20%',
+    '30%',
+    '40%',
+    '50%',
+    '60%',
+    '70%',
+    '80%',
+    '90%',
+    '100%',
+  ];
+  
 
   constructor(
-    private _empleadoService: EmpleadosService,
+    private _userService: UsersService,
     private _proyectoService: ProyectosService,
     private _formBuilder: FormBuilder,
     private changeDetectorRef: ChangeDetectorRef,
     public _dialogRef: MatDialogRef<ModalProyectosComponent>,
     private modalCommunicationService: ModalService,
     @Inject(MAT_DIALOG_DATA) public data: { proyectoId: number },
-    public dialogRef: MatDialogRef<ModalProyectosComponent>,
-  ) { 
-    this.initForm(); 
+    public dialogRef: MatDialogRef<ModalProyectosComponent>
+  ) {
+    this.initForm();
   }
 
   ngOnInit(): void {
     if (this.data && this.data.proyectoId) {
-      this.title = 'Editar Proyecto'
+      this.title = 'Editar Proyecto';
       this.button = false;
       // Llama a un servicio para obtener la información del usuario por ID
       this.getProyectoById(this.data.proyectoId);
@@ -56,17 +72,15 @@ export class ModalProyectosComponent implements OnInit {
     this.modalCommunicationService.closeModal$.subscribe(() => {
       this._dialogRef.close();
     });
-    this._empleadoService.getEmployees().subscribe((empleado: Employee[]) => {
-      this.empleado = empleado;
-    });
+    this.loadUser();
   }
 
   initForm() {
     this.formGroup = this._formBuilder.group({
-      id:[0],
       titulo: ['', [Validators.required, Validators.maxLength(8)]],
-      descripcion: ['', [Validators.required, ]],
-      estado: ['', [Validators.required]]
+      descripcion: ['', [Validators.required]],
+      estado: ['0%', [Validators.required]],
+      leader: ['', [Validators.required]],
     });
     this.formGroup.valueChanges.subscribe((val) => {
       this.currentProyecto = val;
@@ -89,7 +103,7 @@ export class ModalProyectosComponent implements OnInit {
       },
       complete: () => {
         this.loading = false;
-      }
+      },
     });
   }
   private handleResponse(response: any): void {
@@ -99,31 +113,38 @@ export class ModalProyectosComponent implements OnInit {
       titulo: this.currentProyecto.titulo,
       descripcion: this.currentProyecto.descripcion,
       estado: this.currentProyecto.estado,
-      // Verificar si la categoría está definida y asignar su nombre
-      lider: this.currentProyecto.lider ? this.currentProyecto.lider.nombreEmpleado : '',
+      leader: this.currentProyecto.leader
+        ? this.currentProyecto.leader.firstName
+        : '',
     });
     this.loading = false;
   }
 
   private handleError(error: any): void {
     if (error.status === 404) {
-      console.error("Error al obtener proyectos:", error.error.message);
-      this.currentProyecto = error.error.data
+      console.error('Error al obtener proyectos:', error.error.message);
+      this.currentProyecto = error.error.data;
     }
     this.loading = false;
   }
   // Método para manejar la creación de un proyecto
   createProjecto() {
-    this._proyectoService.createProyecto(this.currentProyecto).subscribe((res: any) => {
-      console.log(this.currentProyecto);
-    });
+    this._proyectoService
+      .createProyecto(this.currentProyecto)
+      .subscribe((res: any) => {
+        console.log(this.currentProyecto);
+        window.location.reload();
+      });
   }
 
   // Método para manejar la actualización de un proyecto
   updateProjecto() {
-    this._proyectoService.updateProyecto(this.currentProyecto).subscribe((res: any) => {
-      console.log('update',this.currentProyecto);
-    });
+    this._proyectoService
+      .updateProyecto(this.currentProyecto)
+      .subscribe((res: any) => {
+        console.log('update', this.currentProyecto);
+        window.location.reload();
+      });
   }
   closeModal() {
     this.modalCommunicationService.close();
@@ -131,47 +152,50 @@ export class ModalProyectosComponent implements OnInit {
 
   public onSubmit(): void {
     if (this.formGroup.valid) {
-    const nombreEmpleado = this.formGroup.value.nombreEmpleado;
-    const empleadoSeleccionado = this.empleado.find(cat => cat.nombreEmpleado === nombreEmpleado);
-    if (empleadoSeleccionado) {
-      this.currentProyecto.lider = empleadoSeleccionado;
-      
-      if (!this.currentProyecto.id) {
-        this.createProjecto();
+      const nombreLider = this.formGroup.value.leader;
+      const liderSeleccionado = this.user.find(
+        (user) => user.firstName === nombreLider
+      );
+
+      if (liderSeleccionado) {
+        this.currentProyecto.leader = liderSeleccionado;
+
+        if (!this.currentProyecto.id) {
+          this.createProjecto();
+        } else {
+          this.updateProjecto();
+        }
+        this.modalCommunicationService.close();
       } else {
-        this.updateProjecto();
-      }
-      this.modalCommunicationService.close();
-      } else {
-      console.error('empelado no encontrado');
+        console.error('proyecto no encontrado  xd');
       }
     }
   }
   public onSubmitUpdate(): void {
     if (this.formGroup.valid) {
-      const nombreEmpleado = this.formGroup.value.nombreEmpleado;
-      const empleadoSeleccionado = this.empleado.find(cat => cat.nombreEmpleado === nombreEmpleado);
-      
-      if (empleadoSeleccionado) {
-        // Asignar la categoría seleccionada al objeto currentAssets
-        this.currentProyecto.lider = empleadoSeleccionado;
-        
-        // Ahora puedes enviar la solicitud de actualización
+      const nombreLider = this.formGroup.value.leader; // Asegúrate de usar el nombre correcto del control
+      const liderSeleccionado = this.user.find(
+        (user) => user.firstName === nombreLider
+      );
+
+      if (liderSeleccionado) {
+        this.currentProyecto.leader = liderSeleccionado;
+
         this.updateProjecto();
         console.log('Actualización en progreso...', this.currentProyecto);
         this.modalCommunicationService.close();
       } else {
-        console.error('empleado no encontrado');
+        console.error('proyecto no encontrado');
       }
     }
   }
-  private loadEmplado(): void {
-    this._empleadoService.getEmployees().subscribe(
-      (empleados: Employee[]) => {
-        this.empleado = empleados;
+  private loadUser(): void {
+    this._userService.getUsers().subscribe(
+      (usuarios: User[]) => {
+        this.user = usuarios;
       },
       (error) => {
-        console.error("Error al cargar empleados:", error);
+        console.error("Error al cargar horarios:", error);
         this.loading = false;
       }
     );
@@ -179,5 +203,16 @@ export class ModalProyectosComponent implements OnInit {
   ngAfterViewInit() {
     this.changeDetectorRef.detectChanges();
   }
+  // Métodos para manejar el progreso
+  increaseProgress(): void {
+    let currentProgress = parseInt(this.formGroup.get('estado')?.value);
+    currentProgress = Math.min(currentProgress + 10, 100);
+    this.formGroup.patchValue({ estado: `${currentProgress}%` });
+  }
 
+  decreaseProgress(): void {
+    let currentProgress = parseInt(this.formGroup.get('estado')?.value);
+    currentProgress = Math.max(currentProgress - 10, 0);
+    this.formGroup.patchValue({ estado: `${currentProgress}%` });
+  }
 }
