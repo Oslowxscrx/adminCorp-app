@@ -30,7 +30,7 @@ export const routes: Routes = [
       { path: 'area', component: AreaComponent },
       { path: 'empleados', component: EmpleadosComponent },
       { path: 'proyectos', component: ProyectosComponent },
-      { path: 'actividades', component: ActividadesComponent },
+      { path: 'actividades/:id', component: ActividadesComponent },
       { path: 'usuarios', component: UsuarioComponent },
     ],
   },

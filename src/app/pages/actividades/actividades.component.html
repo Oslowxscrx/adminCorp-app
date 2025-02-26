@@ -11,38 +11,38 @@
 
   <!-- Mostrar el mensaje de vacío cuando no hay proyectos -->
   <nz-empty
-    *ngIf="actividades.length === 0"
+    *ngIf="actividad.length === 0"
     nzDescription="No hay proyectos disponibles"
   ></nz-empty>
 
   <!-- Lista de proyectos -->
-  <div *ngIf="actividades.length > 0" class="proyectos-list">
+  <div *ngIf="actividad.length > 0" class="proyectos-list">
     <div class="row">
-      <div class="col-md-4" *ngFor="let actividad of actividades">
+      <div class="col-md-4" *ngFor="let actividades of actividad">
         <nz-card
         style="border-radius: 5px;"
-          [nzTitle]="actividad.nombreActividad"
+          [nzTitle]="actividades.nombreActividad"
           [nzBordered]="true"
-          [ngStyle]="{'background-color': actividad.color}"
+          [ngStyle]="{'background-color': actividades.color}"
         >
-          <p><strong>Asigando:</strong> {{ actividad.staff.firstName }}</p>
-          <p><strong>Descripción:</strong> {{ actividad.descripcion }}</p>
-          <p><strong>Estado:</strong> {{ actividad.estado }}</p>
-          <button nz-button  class="buton-progreso" (click)="openProgressModalActividad(actividad)">
+          <p><strong>Asigando:</strong> {{ actividades.staff.firstName }}</p>
+          <p><strong>Descripción:</strong> {{ actividades.descripcion }}</p>
+          <p><strong>Estado:</strong> {{ actividades.estado }}</p>
+          <button nz-button  class="buton-progreso" (click)="openProgressModalActividad(actividades)">
             Progreso
           </button>
           <hr>
-          <p><strong>Fecha de Creación:</strong> {{ actividad.createAt | date : "yyyy-MM-dd" }}</p>
-          <p><strong>Tiempo de Entrega:</strong> {{ actividad.tiempoEntrega }}</p>
+          <p><strong>Fecha de Creación:</strong> {{ actividades.createAt | date : "yyyy-MM-dd" }}</p>
+          <p><strong>Tiempo de Entrega:</strong> {{ actividades.tiempoEntrega }}</p>
           <button
             nz-button
             nzType="default"
-            (click)="openModalActividad(actividad.id)"
+            (click)="openModalActividad(actividades.id)"
             style="margin-right: 8px"
           >
             Editar
           </button>
-          <button nz-button nzType="primary">
+          <button nz-button nzType="primary" nzDanger (click)="openModalDeleteUsuario(actividades)"> 
             Eliminar
           </button>
         </nz-card>

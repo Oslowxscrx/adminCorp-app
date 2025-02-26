@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { finalize, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -8,7 +7,6 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { User } from '../../interface/usuarios/usuarios';
-import { AuthService } from '../../service/auth.service';
 import { UsersService } from '../../service/user/user.service';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { UserModalComponent } from './user-modal/user-modal.component';
@@ -57,7 +55,7 @@ export class UsuarioComponent {
 
   abrirModalParaEditar(userId: number): void {
     const dialogRef = this._dialog.open(UserModalComponent, {
-      height: '700px',
+      height: '550px',
       width: '550px',
       data: { userId: userId },
     });

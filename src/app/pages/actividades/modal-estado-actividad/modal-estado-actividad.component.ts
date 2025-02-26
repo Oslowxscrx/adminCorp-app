@@ -1,11 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { Component, Inject, OnInit } from '@angular/core';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzIconService, NzIconModule } from 'ng-zorro-antd/icon';
-import { MinusOutline, PlusOutline } from '@ant-design/icons-angular/icons';
 import { Actividad } from '../../../interface/actividades/actividades';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActividadesService } from '../../../service/actividades.service';
+import { MinusOutline, PlusOutline } from '@ant-design/icons-angular/icons';
 
 @Component({
   selector: 'app-progress-modal-actividad',

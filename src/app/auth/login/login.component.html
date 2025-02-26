@@ -29,7 +29,11 @@
             id="usuario"
             formControlName="userName"
             placeholder="Nombre del usuario"
-            [ngClass]="{ 'is-invalid': loginForm.controls['userName'].invalid && loginForm.controls['userName'].touched }"
+            [ngClass]="{
+              'is-invalid':
+                loginForm.controls['userName'].invalid &&
+                loginForm.controls['userName'].touched
+            }"
           />
         </nz-form-control>
       </nz-form-item>

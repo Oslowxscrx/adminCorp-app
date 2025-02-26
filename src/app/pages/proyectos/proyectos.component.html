@@ -35,9 +35,9 @@
           <p><strong>Fecha de Creación:</strong> {{ proyecto.createAt | date : "yyyy-MM-dd" }}</p>
           <hr/>
           <div class="d-flex justify-content-center mt-3">
-            <button nz-button class="button-actividad" [routerLink]="['/system/actividades']">
+            <button nz-button class="button-actividad" [routerLink]="['/system/actividades', proyecto.id]">
               Actividades
-            </button>
+            </button>            
           </div>
           <hr/>
           <button

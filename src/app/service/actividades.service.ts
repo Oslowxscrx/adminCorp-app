@@ -23,14 +23,15 @@ export class ActividadesService {
   }
   
   public getActividadByStaffId(id: number): Observable<Actividad> {
-    return this.http.get<Actividad>(`${this.API_URL}/staff/${id}`);
+    return this.http.get<Actividad>(`${this.API_URL}/proyect/${id}`);
   }
 
-  createActividad(actividad: Actividad): Observable<Actividad> {
-    return this.http.post<Actividad>(this.API_URL, actividad, this.httpOptions);
+  createActividad(actividad: any): Observable<Actividad> {
+    console.log('actividad:', actividad);
+    return this.http.post<any>(this.API_URL, actividad, this.httpOptions);
   }
 
-  public updateActividad(actividad: Actividad): Observable<Actividad> {
+  public updateActividad(actividad: any): Observable<Actividad> {
     return this.http.put<Actividad>(
       `${this.API_URL}/${actividad.id}`,
       actividad,

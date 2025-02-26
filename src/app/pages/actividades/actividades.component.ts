@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActividadesModalComponent } from './actividades-modal/actividades-modal.component';
 import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { NzButtonModule } from 'ng-zorro-antd/button';
+import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
-import { ActividadesModalDeleteComponent } from './actividades-modal-delete/actividades-modal-delete.component';
-import { ProgressModalActividadComponent } from './modal-estado-actividad/modal-estado-actividad.component';
+import { MatDialog } from '@angular/material/dialog';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { Actividad } from '../../interface/actividades/actividades';
 import { ActividadesService } from '../../service/actividades.service';
+import { ActividadesModalComponent } from './actividades-modal/actividades-modal.component';
+import { ProgressModalActividadComponent } from './modal-estado-actividad/modal-estado-actividad.component';
+import { ActividadesModalDeleteComponent } from './actividades-modal-delete/actividades-modal-delete.component';
 
 @Component({
   selector: 'app-actividades',
@@ -18,7 +19,8 @@ import { ActividadesService } from '../../service/actividades.service';
   styleUrl: './actividades.component.css',
 })
 export class ActividadesComponent implements OnInit {
-  actividades: Actividad[] = [];
+  actividad: any[] = [];
+  proyectoId: string | null = null;
   loading: boolean = true;
   colores: string[] = [
     '#FFB3BA',
@@ -49,18 +51,26 @@ export class ActividadesComponent implements OnInit {
 
   constructor(
     private _actividadesService: ActividadesService,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.getActividades();
+    this.proyectoId = this.route.snapshot.paramMap.get('id');
     this.getActivitiesByStaffId();
   }
 
   getActivitiesByStaffId(): void {
-    this._actividadesService.getActividadByStaffId(7).subscribe({
+    console.log('proyectoid', this.proyectoId)
+    const proyectoIdNumber = this.proyectoId ? +this.proyectoId : 0;
+    this._actividadesService.getActividadByStaffId(proyectoIdNumber).subscribe({
       next: (res: any) => {
         console.log('Actividades por staff', res);
+        this.actividad = res.map((actividad: any) => ({
+          ...actividad,
+          color: this.getRandomColor(),
+        }));
+        this.handleResponse(this.actividad);
       },
       error: (error) => {
         console.error('Error al obtener actividades por staff:', error);
@@ -68,32 +78,13 @@ export class ActividadesComponent implements OnInit {
     });
   }
 
-  getActividades() {
-    this.loading = true;
-    this._actividadesService.getActividad().subscribe({
-      next: (response: Actividad[]) => {
-        console.log('actividades', response);
-        this.actividades = response.map((actividad) => ({
-          ...actividad,
-          color: this.getRandomColor(),
-        }));
-        this.handleResponse(this.actividades);
-      },
-      error: (error) => {
-        this.handleError(error);
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
-  }
   private getRandomColor(): string {
     const randomIndex = Math.floor(Math.random() * this.colores.length);
     return this.colores[randomIndex];
   }
 
   private handleResponse(response: any): void {
-    this.actividades = response;
+    this.actividad = response;
     this.loading = false;
   }
   private handleError(error: any): void {
@@ -105,15 +96,17 @@ export class ActividadesComponent implements OnInit {
       }
 
       console.error('Error al obtener proyecto:', error.error.message);
-      this.actividades = error.error.data;
+      this.actividad = error.error.data;
     }
     this.loading = false;
   }
   openModal(): void {
+    const proyectoIdNumber = this.proyectoId ? +this.proyectoId : 0;
     const dialogRef = this._dialog.open(ActividadesModalComponent, {
       height: '710px',
       width: '550px',
       data: {
+        proyectoId: proyectoIdNumber,
         /* datos que deseas pasar al componente de contenido del modal */
       },
     });
@@ -125,18 +118,43 @@ export class ActividadesComponent implements OnInit {
     });
   }
   openModalActividad(actividadId: number): void {
+    const proyectoIdNumber = this.proyectoId ? +this.proyectoId : 0;
     const dialogRef = this._dialog.open(ActividadesModalComponent, {
       height: '580px',
       width: '550px',
-      data: { actividadId: actividadId },
+      data: { actividadId: actividadId, proyectoId: proyectoIdNumber, },
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        // Realizar acciones después de cerrar el modal
+      }
     });
   }
+    getActividad() {
+      this.loading = true;
+      const response = this._actividadesService.getActividad().subscribe({
+        next: (response: Actividad[]) => {
+          console.log('proyectos', response);
+          this.actividad = response.map((actividad) => ({
+            ...actividad,
+            color: this.getRandomColor(),
+          }));
+          this.handleResponse(this.actividad);
+        },
+        error: (error) => {
+          this.handleError(error);
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
+    }
   deleteActividad(actividad: Actividad): void {
     this._actividadesService
       .deleteActividadById(actividad.id)
       .pipe(
         finalize(() => {
-          this.getActividades();
+          this.getActividad();
           // this._router.navigate(['/system/usuarios']);
         })
       )
@@ -171,7 +189,7 @@ export class ActividadesComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result: any) => {
         if (result) {
-          this.getActividades();
+          // this.getActividades();
         }
       });
     } else {

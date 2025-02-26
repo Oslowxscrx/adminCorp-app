@@ -102,7 +102,7 @@ export class ProyectosComponent implements OnInit {
   }
   openModal(): void {
     const dialogRef = this._dialog.open(ModalProyectosComponent, {
-      height: '710px',
+      height: '580px',
       width: '550px',
       data: {
         /* datos que deseas pasar al componente de contenido del modal */

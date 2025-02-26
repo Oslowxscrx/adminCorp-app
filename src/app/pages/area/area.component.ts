@@ -96,8 +96,8 @@ export class AreaComponent implements OnInit {
 
   openModalDeleteArea(area: Area): void {
     const dialogRef = this._dialog.open(AreaModalDeleteComponent, {
-      height: '350px',
-      width: '500px',
+      height: '230px',
+      width: '300px',
       data: {
         title: '¿ Está seguro de eliminar esta area ?',
         message: 'La area sera eliminado definitivamente del sistema.',

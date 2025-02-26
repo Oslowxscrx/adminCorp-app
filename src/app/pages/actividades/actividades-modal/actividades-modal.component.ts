@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Actividad } from '../../../interface/actividades/actividades';
 import { User } from '../../../interface/usuarios/usuarios';
 import { Subscription } from 'rxjs';
@@ -16,9 +22,16 @@ import { MatNativeDateModule } from '@angular/material/core';
 @Component({
   selector: 'app-actividades-modal',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, MatDatepickerModule, MatNativeDateModule, MatInputModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+  ],
   templateUrl: './actividades-modal.component.html',
-  styleUrls: ['./actividades-modal.component.css']
+  styleUrls: ['./actividades-modal.component.css'],
 })
 export class ActividadesModalComponent implements OnInit {
   currentActividad = {} as Actividad;
@@ -50,9 +63,8 @@ export class ActividadesModalComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     public _dialogRef: MatDialogRef<ActividadesModalComponent>,
     private modalCommunicationService: ModalService,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      proyectoId: any; actividadId: number 
-}
+    @Inject(MAT_DIALOG_DATA)
+    public data: { proyectoId: any; actividadId: number }
   ) {
     this.initForm();
   }
@@ -74,15 +86,15 @@ export class ActividadesModalComponent implements OnInit {
   initForm() {
     this.formGroup = this._formBuilder.group({
       id: [0],
-      nombreActividad: ['', [Validators.required, Validators.maxLength(8)]],
+      nombreActividad: ['', [Validators.required, Validators.maxLength(25)]],
       descripcion: ['', [Validators.required]],
       staff: ['', [Validators.required]],
       estado: ['0%', [Validators.required]],
       tiempoEntrega: ['', [Validators.required]],
     });
+
     this.formGroup.valueChanges.subscribe((val) => {
       this.currentActividad = val;
-      console.log(val);
     });
   }
 
@@ -112,10 +124,13 @@ export class ActividadesModalComponent implements OnInit {
     this.formGroup.patchValue({
       id: this.currentActividad.id,
       nombreActividad: this.currentActividad.nombreActividad,
-      descripcion: this.currentActividad.descripcion,
+      proyectoId: this.data.proyectoId,
+      staff: this.currentActividad.staff.id,
       estado: this.currentActividad.estado,
-      staff: this.currentActividad.staff ? this.currentActividad.staff.firstName : '',
-      tiempoEntrega: this.currentActividad.tiempoEntrega ? moment(this.currentActividad.tiempoEntrega).format('YYYY-MM-DD') : '',
+      descripcion: this.currentActividad.descripcion,
+      tiempoEntrega: this.currentActividad.tiempoEntrega
+        ? moment(this.currentActividad.tiempoEntrega).format('YYYY-MM-DD')
+        : '',
     });
     this.loading = false;
   }
@@ -129,13 +144,19 @@ export class ActividadesModalComponent implements OnInit {
   }
 
   createActividad() {
-    const actividadData = { ...this.formGroup.value };
-    actividadData.tiempoEntrega = moment(actividadData.tiempoEntrega).format('DD-MM-YYYY');
-    delete actividadData.id;
+    const actividadData = {
+      nombreActividad: this.formGroup.value.nombreActividad,
+      proyecto: { id: this.data.proyectoId },
+      staff: { id: +this.formGroup.value.staff },
+      descripcion: this.formGroup.value.descripcion,
+      estado: this.formGroup.value.estado,
+      tiempoEntrega: moment(this.formGroup.value.tiempoEntrega).format(
+        'YYYY-MM-DDTHH:mm:ss'
+      ),
+    };
 
     this._actividadService.createActividad(actividadData).subscribe({
-      next: (res: any) => {
-        console.log('Actividad creada:', actividadData);
+      next: () => {
         this.modalCommunicationService.close();
         window.location.reload();
       },
@@ -144,17 +165,28 @@ export class ActividadesModalComponent implements OnInit {
         if (error.status === 403) {
           alert('No tienes permisos para realizar esta acción.');
         }
-      }
+      },
     });
   }
 
   updateActividad() {
-    const actividadData = { ...this.formGroup.value };
-    actividadData.tiempoEntrega = moment(actividadData.tiempoEntrega).format('DD-MM-YYYY');
-
+    const actividadData = {
+      id: this.currentActividad.id,
+      nombreActividad: this.formGroup.value.nombreActividad,
+      proyecto: { id: this.data.proyectoId },
+      staff: { id: +this.formGroup.value.staff },
+      descripcion: this.formGroup.value.descripcion,
+      estado: this.formGroup.value.estado,
+      tiempoEntrega: moment(this.formGroup.value.tiempoEntrega).format(
+        'YYYY-MM-DDTHH:mm:ss'
+      ),
+    };
+    console.log(
+      'Actualizando actividad con los siguientes datos:',
+      actividadData
+    );
     this._actividadService.updateActividad(actividadData).subscribe({
-      next: (res: any) => {
-        console.log('Actividad actualizada:', this.currentActividad);
+      next: () => {
         window.location.reload();
       },
       error: (error) => {
@@ -162,79 +194,83 @@ export class ActividadesModalComponent implements OnInit {
         if (error.status === 403) {
           alert('No tienes permisos para realizar esta acción.');
         }
-      }
+      },
     });
   }
+
   closeModal() {
     this.modalCommunicationService.close();
-  }
-
-  public onSubmit(): void {
-    if (this.formGroup.valid) {
-      const nombreAsignado = this.formGroup.value.staff;
-      const usuarioSeleccionado = this.user.find(
-        (user) => user.firstName === nombreAsignado && user.role === 'STAFF'
-      );
-
-      if (usuarioSeleccionado) {
-        this.currentActividad.staff = usuarioSeleccionado;
-
-        if (!this.currentActividad.id) {
-          this.createActividad();
-        } else {
-          this.updateActividad();
-        }
-        this.modalCommunicationService.close();
-      } else {
-        console.error('Usuario no encontrado');
-      }
-    }
-  }
-
-  public onSubmitUpdate(): void {
-    if (this.formGroup.valid) {
-      const nombreAsignado = this.formGroup.value.staff;
-      const usuarioSeleccionado = this.user.find(
-        (user) => user.firstName === nombreAsignado && user.role === 'STAFF'
-      );
-
-      if (usuarioSeleccionado) {
-        this.currentActividad.staff = usuarioSeleccionado;
-
-        this.updateActividad();
-        console.log('Actualización en progreso...', this.currentActividad);
-        this.modalCommunicationService.close();
-      } else {
-        console.error('Usuario no encontrado');
-      }
-    }
   }
 
   private loadUser(): void {
     this._userService.getUsers().subscribe(
       (usuarios: User[]) => {
-        this.user = usuarios.filter(user => user.role === 'STAFF');
+        this.user = usuarios.filter((user) => user.role === 'STAFF');
       },
       (error) => {
-        console.error("Error al cargar usuarios:", error);
+        console.error('Error al cargar usuarios:', error);
         this.loading = false;
       }
     );
   }
 
+  public onSubmit(): void {
+    if (this.formGroup.valid) {
+      if (!this.currentActividad.id) {
+        this.createActividad();
+      } else {
+        this.updateActividad();
+      }
+      this.modalCommunicationService.close();
+    }
+  }
+  public onSubmitUpdate(): void {
+    if (this.formGroup.valid) {
+      const actividadData = {
+        id: this.currentActividad.id, // Asegúrate de incluir el ID de la actividad
+        nombreActividad: this.formGroup.value.nombreActividad,
+        proyecto: { id: this.data.proyectoId },
+        staff: { id: +this.formGroup.value.staff },
+        descripcion: this.formGroup.value.descripcion,
+        estado: this.formGroup.value.estado,
+        tiempoEntrega: moment(this.formGroup.value.tiempoEntrega).format(
+          'YYYY-MM-DDTHH:mm:ss'
+        ),
+      };
+
+      console.log(
+        'Actualizando actividad con los siguientes datos:',
+        actividadData
+      );
+
+      this._actividadService.updateActividad(actividadData).subscribe({
+        next: () => {
+          window.location.reload();
+        },
+        error: (error) => {
+          console.error('Error al actualizar actividad:', error);
+          if (error.status === 403) {
+            alert('No tienes permisos para realizar esta acción.');
+          }
+        },
+      });
+      this.modalCommunicationService.close();
+    }
+  }
+
   ngAfterViewInit() {
     this.changeDetectorRef.detectChanges();
   }
-    // Métodos para manejar el progreso
-    increaseProgress(): void {
-      let currentProgress = parseInt(this.formGroup.get('estado')?.value);
-      currentProgress = Math.min(currentProgress + 10, 100);
-      this.formGroup.patchValue({ estado: `${currentProgress}%` });
-    }
-  
-    decreaseProgress(): void {
-      let currentProgress = parseInt(this.formGroup.get('estado')?.value);
-      currentProgress = Math.max(currentProgress - 10, 0);
-      this.formGroup.patchValue({ estado: `${currentProgress}%` });
-    }
+
+  increaseProgress(): void {
+    let currentProgress = parseInt(this.formGroup.get('estado')?.value);
+    currentProgress = Math.min(currentProgress + 10, 100);
+    this.formGroup.patchValue({ estado: `${currentProgress}%` });
+  }
+
+  decreaseProgress(): void {
+    let currentProgress = parseInt(this.formGroup.get('estado')?.value);
+    currentProgress = Math.max(currentProgress - 10, 0);
+    this.formGroup.patchValue({ estado: `${currentProgress}%` });
+  }
 }
