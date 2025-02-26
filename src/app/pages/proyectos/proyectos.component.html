@@ -28,10 +28,11 @@
           <p><strong>Líder:</strong> {{ proyecto.leader.firstName }}</p>
           <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
           <p><strong>Estado:</strong> {{ proyecto.estado }}</p>
-          <p><strong>Fecha de Creación:</strong> {{ proyecto.createAt | date : "yyyy-MM-dd" }}</p>
           <button nz-button  class="buton-progreso" (click)="openProgressModal(proyecto)">
             Progreso
           </button>
+          <hr>
+          <p><strong>Fecha de Creación:</strong> {{ proyecto.createAt | date : "yyyy-MM-dd" }}</p>
           <hr/>
           <div class="d-flex justify-content-center mt-3">
             <button nz-button class="button-actividad" [routerLink]="['/system/actividades']">
@@ -41,13 +42,13 @@
           <hr/>
           <button
             nz-button
-            nzType="default"
+            nzType="primary"
             (click)="openModalProyecto(proyecto.id)"
             style="margin-right: 8px"
           >
             Editar
           </button>
-          <button nz-button nzType="primary" (click)="openModalDeleteUsuario(proyecto)">
+          <button nz-button nzType="primary" nzDanger (click)="openModalDeleteUsuario(proyecto)">
             Eliminar
           </button>
         </nz-card>

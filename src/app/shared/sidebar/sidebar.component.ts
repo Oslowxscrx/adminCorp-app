@@ -40,6 +40,7 @@ import {
 export class SidebarComponent {
   isCollapsed = false;
   isLogoutExpanded = false;
+  role: string = '';
   constructor(
     private iconService: NzIconService,
     private authService: AuthService

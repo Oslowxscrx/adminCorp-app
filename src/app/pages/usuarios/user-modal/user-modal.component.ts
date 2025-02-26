@@ -93,7 +93,7 @@ export class UserModalComponent implements OnInit {
       ],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', this.data && this.data.userId ? [] : [Validators.required, Validators.minLength(8)]],
       role: ['', [Validators.required]],
     });
     this.formGroup.valueChanges.subscribe((val) => {

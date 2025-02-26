@@ -8,13 +8,14 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AreaModalComponent } from './area-modal/area-modal.component';
 import { AreaModalDeleteComponent } from './area-modal-delete/area-modal-delete.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-area',
   standalone: true,
   templateUrl: './area.component.html',
   styleUrls: ['./area.component.css'],
-  imports: [NzTableModule, NzButtonModule, NzIconModule],
+  imports: [NzTableModule, NzButtonModule, NzIconModule, CommonModule],
 })
 export class AreaComponent implements OnInit {
   area: Area[] = [];

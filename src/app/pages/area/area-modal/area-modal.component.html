@@ -7,36 +7,36 @@
     <form [formGroup]="formGroup">
       <!-- Campo de Nombre Área -->
       <div class="form-group mb-4">
-        <label for="nombreArea" class="block text-xs font-bold mb-2 text-red-500">Nombre Área</label>
+        <label for="nombre" class="block text-xs font-bold mb-2 text-red-500">Nombre Área</label>
         <input
           type="text"
-          id="nombreArea"
+          id="nombre"
           class="form-control"
-          formControlName="nombreArea"
+          formControlName="nombre"
           placeholder="Nombre del Área"
           maxlength="50"
-        />
-        <div *ngIf="formGroup.get('nombreArea')?.errors" class="text-danger text-sm mt-2">
-          <small *ngIf="formGroup.get('nombreArea')?.hasError('required')">El nombre del área es obligatorio.</small>
-          <small *ngIf="formGroup.get('nombreArea')?.hasError('minlength')">El nombre es muy corto.</small>
-          <small *ngIf="formGroup.get('nombreArea')?.hasError('maxlength')">El nombre es muy largo.</small>
+        />descripcion
+        <div *ngIf="formGroup.get('nombre')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('nombre')?.hasError('required')">El nombre del área es obligatorio.</small>
+          <small *ngIf="formGroup.get('nombre')?.hasError('minlength')">El nombre es muy corto.</small>
+          <small *ngIf="formGroup.get('nombre')?.hasError('maxlength')">El nombre es muy largo.</small>
         </div>
       </div>
 
       <!-- Campo de Descripción Área -->
       <div class="form-group mb-4">
-        <label for="descripcionArea" class="block text-xs font-bold mb-2 text-red-500">Descripción Área</label>
+        <label for="descripcion" class="block text-xs font-bold mb-2 text-red-500">Descripción Área</label>
         <input
           type="text"
-          id="descripcionArea"
+          id="descripcion"
           class="form-control"
-          formControlName="descripcionArea"
+          formControlName="descripcion"
           placeholder="Descripción del Área"
           maxlength="100"
         />
-        <div *ngIf="formGroup.get('descripcionArea')?.errors" class="text-danger text-sm mt-2">
-          <small *ngIf="formGroup.get('descripcionArea')?.hasError('required')">La descripción es obligatoria.</small>
-          <small *ngIf="formGroup.get('descripcionArea')?.hasError('maxlength')">La descripción es demasiado larga.</small>
+        <div *ngIf="formGroup.get('descripcion')?.errors" class="text-danger text-sm mt-2">
+          <small *ngIf="formGroup.get('descripcion')?.hasError('required')">La descripción es obligatoria.</small>
+          <small *ngIf="formGroup.get('descripcion')?.hasError('maxlength')">La descripción es demasiado larga.</small>
         </div>
       </div>
 

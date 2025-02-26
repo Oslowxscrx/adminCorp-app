@@ -46,8 +46,7 @@
         <div
           class="invalid-feedback"
           *ngIf="
-            formGroup.get('descripcion')?.invalid &&
-            formGroup.get('descripcion')?.touched
+            formGroup.get('descripcion')?.invalid && formGroup.get('descripcion')?.touched
           "
         >
           La descripción es obligatoria.
@@ -83,15 +82,15 @@
 
       <!-- Campo asigando (usuario) -->
       <div class="mb-3">
-        <label for="asignado" class="form-label">Líder del Proyecto</label>
+        <label for="staff" class="form-label">Usuario Asignado</label>
         <select
-          id="asignado"
-          formControlName="asignado"
+          id="staff"
+          formControlName="staff"
           class="form-select"
           [ngClass]="{
             'is-invalid':
-              formGroup.get('asignado')?.invalid &&
-              formGroup.get('asignado')?.touched
+              formGroup.get('staff')?.invalid &&
+              formGroup.get('staff')?.touched
           }"
         >
           <option value="" disabled>Seleccione un Usuario</option>
@@ -102,7 +101,7 @@
         <div
           class="invalid-feedback"
           *ngIf="
-            formGroup.get('asignado')?.invalid && formGroup.get('asignado')?.touched
+            formGroup.get('staff')?.invalid && formGroup.get('staff')?.touched
           "
         >
           Selecciona un empleado válido.
@@ -113,15 +112,15 @@
       <div class="mb-3">
         <label for="tiempoEntrega" class="form-label">Fecha de Entrega</label>
         <input
-        type="date"
-        id="tiempoEntrega"
-        formControlName="tiempoEntrega"
-        class="form-control"
-        [ngClass]="{
-          'is-invalid': formGroup.get('tiempoEntrega')?.invalid &&
-                        formGroup.get('tiempoEntrega')?.touched
-        }"
-      />
+          type="date"
+          id="tiempoEntrega"
+          formControlName="tiempoEntrega"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': formGroup.get('tiempoEntrega')?.invalid &&
+                          formGroup.get('tiempoEntrega')?.touched
+          }"
+        />
         <div
           class="invalid-feedback"
           *ngIf="
@@ -145,7 +144,7 @@
       [disabled]="formGroup.invalid"
       (click)="!currentActividad.id ? onSubmit() : onSubmitUpdate()"
     >
-      {{ currentActividad.id ? "Actualizar Proyecto" : "Crear Proyecto" }}
+      {{ currentActividad.id ? "Actualizar Actividad" : "Crear Actividad" }}
     </button>
   </div>
 </div>

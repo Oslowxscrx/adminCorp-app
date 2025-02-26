@@ -1,7 +1,7 @@
 export interface Area {
   id:number;
-  nombreArea: string;
-  descripcionArea: string;
+  nombre: string;
+  descripcion: string;
   createAt: Date;
   deletedAt: Date;
 }

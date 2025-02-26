@@ -8,7 +8,7 @@ import { UsuarioComponent } from './pages/usuarios/usuarios.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProyectosComponent } from './pages/proyectos/proyectos.component';
 import { EmpleadosComponent } from './pages/empleados/empleados.component';
-import { ActividadesComponent } from './pages/proyectos/actividades/actividades.component';
+import { ActividadesComponent } from './pages/actividades/actividades.component';
 import { AreaComponent } from './pages/area/area.component';
 
 export const routes: Routes = [

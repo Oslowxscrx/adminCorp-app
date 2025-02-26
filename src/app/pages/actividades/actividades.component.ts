@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { Actividad } from '../../../interface/actividades/actividades';
-import { ActividadesService } from '../../../service/actividades.service';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActividadesModalComponent } from './actividades-modal/actividades-modal.component';
 import { finalize } from 'rxjs';
@@ -9,6 +7,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { ActividadesModalDeleteComponent } from './actividades-modal-delete/actividades-modal-delete.component';
+import { ProgressModalActividadComponent } from './modal-estado-actividad/modal-estado-actividad.component';
+import { Actividad } from '../../interface/actividades/actividades';
+import { ActividadesService } from '../../service/actividades.service';
 
 @Component({
   selector: 'app-actividades',
@@ -16,7 +17,7 @@ import { ActividadesModalDeleteComponent } from './actividades-modal-delete/acti
   templateUrl: './actividades.component.html',
   styleUrl: './actividades.component.css',
 })
-export class ActividadesComponent {
+export class ActividadesComponent implements OnInit {
   actividades: Actividad[] = [];
   loading: boolean = true;
   colores: string[] = [
@@ -53,6 +54,18 @@ export class ActividadesComponent {
 
   ngOnInit(): void {
     this.getActividades();
+    this.getActivitiesByStaffId();
+  }
+
+  getActivitiesByStaffId(): void {
+    this._actividadesService.getActividadByStaffId(7).subscribe({
+      next: (res: any) => {
+        console.log('Actividades por staff', res);
+      },
+      error: (error) => {
+        console.error('Error al obtener actividades por staff:', error);
+      },
+    });
   }
 
   getActividades() {
@@ -111,11 +124,11 @@ export class ActividadesComponent {
       }
     });
   }
-  openModalActividad(proyectoId: number): void {
+  openModalActividad(actividadId: number): void {
     const dialogRef = this._dialog.open(ActividadesModalComponent, {
       height: '580px',
       width: '550px',
-      data: { proyectoId: proyectoId },
+      data: { actividadId: actividadId },
     });
   }
   deleteActividad(actividad: Actividad): void {
@@ -148,5 +161,21 @@ export class ActividadesComponent {
         this.deleteActividad(actividad);
       }
     });
+  }
+  openProgressModalActividad(actividad: Actividad): void {
+    if (actividad && actividad.estado) {
+      const dialogRef = this._dialog.open(ProgressModalActividadComponent, {
+        width: '400px',
+        data: { actividad: actividad },
+      });
+
+      dialogRef.afterClosed().subscribe((result: any) => {
+        if (result) {
+          this.getActividades();
+        }
+      });
+    } else {
+      console.error('La actividad no tiene la propiedad estado definida.');
+    }
   }
 }

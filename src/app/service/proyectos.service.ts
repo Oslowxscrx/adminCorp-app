@@ -20,7 +20,7 @@ export class ProyectosService {
   }
 
   getProyectoById(id: number): Observable<Proyecto> {
-    return this.http.get<Proyecto>(`${this.API_URL}/proyectos${id}`);
+    return this.http.get<Proyecto>(`${this.API_URL}/${id}`);
   }
 
   createProyecto(proyecto: Proyecto): Observable<Proyecto> {

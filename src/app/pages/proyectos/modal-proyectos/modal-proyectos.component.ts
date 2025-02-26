@@ -44,7 +44,6 @@ export class ModalProyectosComponent implements OnInit {
     '90%',
     '100%',
   ];
-  
 
   constructor(
     private _userService: UsersService,
@@ -77,6 +76,7 @@ export class ModalProyectosComponent implements OnInit {
 
   initForm() {
     this.formGroup = this._formBuilder.group({
+      id: [0],
       titulo: ['', [Validators.required, Validators.maxLength(8)]],
       descripcion: ['', [Validators.required]],
       estado: ['0%', [Validators.required]],
@@ -128,13 +128,23 @@ export class ModalProyectosComponent implements OnInit {
     this.loading = false;
   }
   // Método para manejar la creación de un proyecto
-  createProjecto() {
-    this._proyectoService
-      .createProyecto(this.currentProyecto)
-      .subscribe((res: any) => {
-        console.log(this.currentProyecto);
+  public createProyecto() {
+    const proyectoData = { ...this.formGroup.value };
+    delete proyectoData.id; // Eliminar el campo id para la creación
+
+    this._proyectoService.createProyecto(proyectoData).subscribe({
+      next: (res: any) => {
+        console.log('Proyecto creado:', proyectoData);
+        this.modalCommunicationService.close();
         window.location.reload();
-      });
+      },
+      error: (error) => {
+        console.error('Error al crear empleado:', error);
+        if (error.status === 403) {
+          alert('No tienes permisos para realizar esta acción.');
+        }
+      }
+    });
   }
 
   // Método para manejar la actualización de un proyecto
@@ -153,21 +163,22 @@ export class ModalProyectosComponent implements OnInit {
   public onSubmit(): void {
     if (this.formGroup.valid) {
       const nombreLider = this.formGroup.value.leader;
+      // Filtrar usuarios que tengan el rol LEADER
       const liderSeleccionado = this.user.find(
-        (user) => user.firstName === nombreLider
+        (user) => user.firstName === nombreLider && user.role === 'LEADER'
       );
-
+  
       if (liderSeleccionado) {
         this.currentProyecto.leader = liderSeleccionado;
-
+  
         if (!this.currentProyecto.id) {
-          this.createProjecto();
+          this.createProyecto();
         } else {
           this.updateProjecto();
         }
         this.modalCommunicationService.close();
       } else {
-        console.error('proyecto no encontrado  xd');
+        console.error('Líder no encontrado o no tiene el rol LEADER');
       }
     }
   }
@@ -175,7 +186,7 @@ export class ModalProyectosComponent implements OnInit {
     if (this.formGroup.valid) {
       const nombreLider = this.formGroup.value.leader; // Asegúrate de usar el nombre correcto del control
       const liderSeleccionado = this.user.find(
-        (user) => user.firstName === nombreLider
+        (user) => user.firstName === nombreLider && user.role === 'LEADER'
       );
 
       if (liderSeleccionado) {
@@ -185,17 +196,18 @@ export class ModalProyectosComponent implements OnInit {
         console.log('Actualización en progreso...', this.currentProyecto);
         this.modalCommunicationService.close();
       } else {
-        console.error('proyecto no encontrado');
+        console.error('Líder no encontrado o no tiene el rol LEADER');
       }
     }
   }
   private loadUser(): void {
     this._userService.getUsers().subscribe(
       (usuarios: User[]) => {
-        this.user = usuarios;
+        // Filtrar usuarios que tengan el rol LEADER
+        this.user = usuarios.filter(user => user.role === 'LEADER');
       },
       (error) => {
-        console.error("Error al cargar horarios:", error);
+        console.error("Error al cargar usuarios:", error);
         this.loading = false;
       }
     );

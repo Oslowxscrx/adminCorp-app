@@ -6,10 +6,11 @@ import { Subscription } from 'rxjs';
 import { Area } from '../../../interface/area/area';
 import { AreaService } from '../../../service/area.service';
 import { ModalService } from '../../../service/modal/modal.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-area-modal',
-  imports: [ ReactiveFormsModule,],
+  imports: [ ReactiveFormsModule, CommonModule],
   templateUrl: './area-modal.component.html',
   styleUrl: './area-modal.component.css'
   
@@ -55,8 +56,8 @@ export class AreaModalComponent implements OnInit {
   initForm() {
     this.formGroup = this._formBuilder.group({
       id:[0],
-      nombreArea: ['', [Validators.required, Validators.maxLength(16)]],
-      descripcionArea: ['', [ Validators.maxLength(56)]],
+      nombre: ['', [Validators.required, Validators.maxLength(16)]],
+      descripcion: ['', [ Validators.maxLength(56)]],
     }
   );
 
@@ -102,14 +103,28 @@ export class AreaModalComponent implements OnInit {
   }
 
   public createArea() {
-    this._areaService.createArea(this.currentArea).subscribe((res: any) => {
-      console.log(this.currentArea);
-      window.location.reload();
+    const areaData = { ...this.formGroup.value };
+    delete areaData.id; // Eliminar el campo id para la creación
+
+    this._areaService.createArea(areaData).subscribe({
+      next: (res: any) => {
+        console.log('area creado:', areaData);
+        this.modalCommunicationService.close();
+        window.location.reload();
+      },
+      error: (error) => {
+        console.error('Error al crear area:', error);
+        if (error.status === 403) {
+          alert('No tienes permisos para realizar esta acción.');
+        }
+      }
     });
   }
 
   public updateArea() {
-    this._areaService.updateArea(this.currentArea).subscribe((res: any) => {
+    this._areaService
+    .updateArea(this.currentArea)
+    .subscribe((res: any) => {
       console.log('update',this.currentArea);
       window.location.reload();
     });

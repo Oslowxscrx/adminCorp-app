@@ -1,9 +1,9 @@
 export enum RoleEnum {
   ADMIN  = 'ADMIN',
-  USER   = 'USER',
   LEADER = 'LEADER',
   STAFF  = 'STAFF',
-  RH     = 'RH'
+  RH     = 'RH',
+  GUEST = "GUEST"
 }
 
 export type RoleEnumKeys = keyof typeof RoleEnum;

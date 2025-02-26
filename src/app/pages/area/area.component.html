@@ -25,16 +25,20 @@
   <nz-table #basicTable [nzBordered]="true" [nzData]="area" [nzSize]="'middle'" [nzFrontPagination]="false">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Nombre de Área</th>
         <th>Descripción de Área</th>
+        <th>Fecha de Creación</th>
         <th>Editar</th>
         <th>Eliminar</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let area of area">
-        <td>{{ area.nombreArea }}</td>
-        <td>{{ area.descripcionArea }}</td>
+        <td>{{ area.id }}</td>
+        <td>{{ area.nombre }}</td>
+        <td>{{ area.descripcion }}</td>
+        <td>{{ area.createAt | date : "yyyy-MM-dd" }}</td>
         <td>
           <button
             nz-button

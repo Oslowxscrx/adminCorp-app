@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Actividad } from '../../../../interface/actividades/actividades';
-import { User } from '../../../../interface/usuarios/usuarios';
+import { Actividad } from '../../../interface/actividades/actividades';
+import { User } from '../../../interface/usuarios/usuarios';
 import { Subscription } from 'rxjs';
-import { UsersService } from '../../../../service/user/user.service';
-import { ActividadesService } from '../../../../service/actividades.service';
-import { ModalProyectosComponent } from '../../modal-proyectos/modal-proyectos.component';
+import { UsersService } from '../../../service/user/user.service';
+import { ActividadesService } from '../../../service/actividades.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ModalService } from '../../../../service/modal/modal.service';
+import moment from 'moment';
+import { ModalService } from '../../../service/modal/modal.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -16,14 +16,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 @Component({
   selector: 'app-actividades-modal',
   standalone: true,
-  imports: [FormsModule, 
-    ReactiveFormsModule, 
-    CommonModule, 
-    MatDatepickerModule, 
-    MatNativeDateModule, 
-    MatInputModule ],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, MatDatepickerModule, MatNativeDateModule, MatInputModule],
   templateUrl: './actividades-modal.component.html',
-  styleUrl: './actividades-modal.component.css'
+  styleUrls: ['./actividades-modal.component.css']
 })
 export class ActividadesModalComponent implements OnInit {
   currentActividad = {} as Actividad;
@@ -33,9 +28,20 @@ export class ActividadesModalComponent implements OnInit {
   paramsSubscription!: Subscription;
   loading: boolean = true;
   button: boolean = true;
-
-  estados = ['0%', '10%', '20%', '30%', '40%'];
-  formGroup!: FormGroup; // Formulario para validar y gestionar los datos
+  formGroup!: FormGroup;
+  estados = [
+    '0%',
+    '10%',
+    '20%',
+    '30%',
+    '40%',
+    '50%',
+    '60%',
+    '70%',
+    '80%',
+    '90%',
+    '100%',
+  ];
 
   constructor(
     private _userService: UsersService,
@@ -44,8 +50,9 @@ export class ActividadesModalComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     public _dialogRef: MatDialogRef<ActividadesModalComponent>,
     private modalCommunicationService: ModalService,
-    @Inject(MAT_DIALOG_DATA) public data: { actividadId: number },
-    public dialogRef: MatDialogRef<ModalProyectosComponent>
+    @Inject(MAT_DIALOG_DATA) public data: {
+      proyectoId: any; actividadId: number 
+}
   ) {
     this.initForm();
   }
@@ -54,18 +61,14 @@ export class ActividadesModalComponent implements OnInit {
     if (this.data && this.data.actividadId) {
       this.title = 'Editar Actividad';
       this.button = false;
-      // Llama a un servicio para obtener la información del usuario por ID
       this.getActividadById(this.data.actividadId);
     } else {
-      // Manejo adicional si no se proporciona un ID
       this.button = true;
     }
     this.modalCommunicationService.closeModal$.subscribe(() => {
       this._dialogRef.close();
     });
-    this._userService.getUsers().subscribe((user: User[]) => {
-      this.user = user;
-    });
+    this.loadUser();
   }
 
   initForm() {
@@ -73,8 +76,8 @@ export class ActividadesModalComponent implements OnInit {
       id: [0],
       nombreActividad: ['', [Validators.required, Validators.maxLength(8)]],
       descripcion: ['', [Validators.required]],
-      asignado: ['', [Validators.required]],
-      estado: ['', [Validators.required]],
+      staff: ['', [Validators.required]],
+      estado: ['0%', [Validators.required]],
       tiempoEntrega: ['', [Validators.required]],
     });
     this.formGroup.valueChanges.subscribe((val) => {
@@ -82,11 +85,13 @@ export class ActividadesModalComponent implements OnInit {
       console.log(val);
     });
   }
+
   ngOnDestroy(): void {
     if (this.paramsSubscription) {
       this.paramsSubscription.unsubscribe();
     }
   }
+
   getActividadById(id: number) {
     this.loading = true;
     this._actividadService.getActividadById(id).subscribe({
@@ -101,6 +106,7 @@ export class ActividadesModalComponent implements OnInit {
       },
     });
   }
+
   private handleResponse(response: any): void {
     this.currentActividad = response;
     this.formGroup.patchValue({
@@ -108,9 +114,8 @@ export class ActividadesModalComponent implements OnInit {
       nombreActividad: this.currentActividad.nombreActividad,
       descripcion: this.currentActividad.descripcion,
       estado: this.currentActividad.estado,
-      asignado: this.currentActividad.asignado
-        ? this.currentActividad.asignado.firstName
-        : '',
+      staff: this.currentActividad.staff ? this.currentActividad.staff.firstName : '',
+      tiempoEntrega: this.currentActividad.tiempoEntrega ? moment(this.currentActividad.tiempoEntrega).format('YYYY-MM-DD') : '',
     });
     this.loading = false;
   }
@@ -122,24 +127,43 @@ export class ActividadesModalComponent implements OnInit {
     }
     this.loading = false;
   }
-  // Método para manejar la creación de un proyecto
+
   createActividad() {
-    this._actividadService
-      .createActividad(this.currentActividad)
-      .subscribe((res: any) => {
-        console.log(this.currentActividad);
+    const actividadData = { ...this.formGroup.value };
+    actividadData.tiempoEntrega = moment(actividadData.tiempoEntrega).format('DD-MM-YYYY');
+    delete actividadData.id;
+
+    this._actividadService.createActividad(actividadData).subscribe({
+      next: (res: any) => {
+        console.log('Actividad creada:', actividadData);
+        this.modalCommunicationService.close();
         window.location.reload();
-      });
+      },
+      error: (error) => {
+        console.error('Error al crear actividad:', error);
+        if (error.status === 403) {
+          alert('No tienes permisos para realizar esta acción.');
+        }
+      }
+    });
   }
 
-  // Método para manejar la actualización de un proyecto
   updateActividad() {
-    this._actividadService
-      .updateActividad(this.currentActividad)
-      .subscribe((res: any) => {
-        console.log('update', this.currentActividad);
+    const actividadData = { ...this.formGroup.value };
+    actividadData.tiempoEntrega = moment(actividadData.tiempoEntrega).format('DD-MM-YYYY');
+
+    this._actividadService.updateActividad(actividadData).subscribe({
+      next: (res: any) => {
+        console.log('Actividad actualizada:', this.currentActividad);
         window.location.reload();
-      });
+      },
+      error: (error) => {
+        console.error('Error al actualizar actividad:', error);
+        if (error.status === 403) {
+          alert('No tienes permisos para realizar esta acción.');
+        }
+      }
+    });
   }
   closeModal() {
     this.modalCommunicationService.close();
@@ -147,13 +171,13 @@ export class ActividadesModalComponent implements OnInit {
 
   public onSubmit(): void {
     if (this.formGroup.valid) {
-      const nombreAsignado = this.formGroup.value.asignado; // Asegúrate de usar el nombre correcto del control
+      const nombreAsignado = this.formGroup.value.staff;
       const usuarioSeleccionado = this.user.find(
-        (user) => user.firstName == nombreAsignado
+        (user) => user.firstName === nombreAsignado && user.role === 'STAFF'
       );
 
       if (usuarioSeleccionado) {
-        this.currentActividad.asignado = usuarioSeleccionado;
+        this.currentActividad.staff = usuarioSeleccionado;
 
         if (!this.currentActividad.id) {
           this.createActividad();
@@ -162,29 +186,55 @@ export class ActividadesModalComponent implements OnInit {
         }
         this.modalCommunicationService.close();
       } else {
-        console.error('actividad no encontrada');
+        console.error('Usuario no encontrado');
       }
     }
   }
+
   public onSubmitUpdate(): void {
     if (this.formGroup.valid) {
-      const nombreLider = this.formGroup.value.leader; // Asegúrate de usar el nombre correcto del control
+      const nombreAsignado = this.formGroup.value.staff;
       const usuarioSeleccionado = this.user.find(
-        (user) => user.firstName === nombreLider
+        (user) => user.firstName === nombreAsignado && user.role === 'STAFF'
       );
 
       if (usuarioSeleccionado) {
-        this.currentActividad.asignado = usuarioSeleccionado;
+        this.currentActividad.staff = usuarioSeleccionado;
 
         this.updateActividad();
         console.log('Actualización en progreso...', this.currentActividad);
         this.modalCommunicationService.close();
       } else {
-        console.error('actividad no encontrado');
+        console.error('Usuario no encontrado');
       }
     }
   }
+
+  private loadUser(): void {
+    this._userService.getUsers().subscribe(
+      (usuarios: User[]) => {
+        this.user = usuarios.filter(user => user.role === 'STAFF');
+      },
+      (error) => {
+        console.error("Error al cargar usuarios:", error);
+        this.loading = false;
+      }
+    );
+  }
+
   ngAfterViewInit() {
     this.changeDetectorRef.detectChanges();
   }
+    // Métodos para manejar el progreso
+    increaseProgress(): void {
+      let currentProgress = parseInt(this.formGroup.get('estado')?.value);
+      currentProgress = Math.min(currentProgress + 10, 100);
+      this.formGroup.patchValue({ estado: `${currentProgress}%` });
+    }
+  
+    decreaseProgress(): void {
+      let currentProgress = parseInt(this.formGroup.get('estado')?.value);
+      currentProgress = Math.max(currentProgress - 10, 0);
+      this.formGroup.patchValue({ estado: `${currentProgress}%` });
+    }
 }

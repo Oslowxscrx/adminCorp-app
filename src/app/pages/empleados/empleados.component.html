@@ -42,6 +42,7 @@
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Correo Electrónico</th>
+          <th>Área de traajo</th>
           <th>Fecha de Creación</th>
           <th>Editar</th>
           <th>Eliminar</th>
@@ -54,6 +55,7 @@
           <td>{{ empleado.nombreEmpleado }}</td>
           <td>{{ empleado.apellidoEmpleado }}</td>
           <td>{{ empleado.correoEmpleado }}</td>
+          <td>{{ empleado.area.nombre }}</td>
           <td>{{ empleado.createAt | date : "yyyy-MM-dd" }}</td>
           <td>
             <button

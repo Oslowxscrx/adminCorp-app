@@ -1,191 +1,146 @@
 <div class="modal-body">
   <div class="container">
-    <div
-      id="example"
-      tabindex="-1"
-      aria-labelledby="exampleLabel"
-      aria-hidden="true"
-    >
-      <div class="mr-4 ml-4 pt-4" role="document">
-        <form [formGroup]="formGroup">
-          <div class="-content">
-            <div class="modal-header d-flex justify-content-center w-100">
-              <h1 class="modal-title display-5 mb-4" id="exampleLabel">
-                {{ title }}
-              </h1>
-            </div>
-
-            <!-- Campo de Nombre de Usuario -->
-            <div class="form-group mb-3">
-              <label for="userName">Nombre de Usuario</label>
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  type="text"
-                  formControlName="userName"
-                  autocomplete="off"
-                  spellcheck="false"
-                  placeholder="Nombre de usuario"
-                />
-              </div>
-              <div
-                *ngIf="
-                  formGroup.get('userName')?.invalid &&
-                  (formGroup.get('userName')?.touched ||
-                    formGroup.get('userName')?.dirty)
-                "
-                class="alert alert-danger p-1 mt-1 d-flex align-items-center"
-              >
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                <small *ngIf="formGroup.get('userName')?.hasError('required')"
-                  >Este campo es requerido</small
-                >
-                <small
-                  *ngIf="
-                    formGroup.get('userName')?.hasError('minlength') ||
-                    formGroup.get('userName')?.hasError('maxlength')
-                  "
-                  >Debe tener entre 2 y 20 caracteres</small
-                >
-              </div>
-            </div>
-
-            <!-- Campo de Nombre -->
-            <div class="form-group mb-3">
-              <label for="firstName">Nombre</label>
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  type="text"
-                  formControlName="firstName"
-                  autocomplete="off"
-                  spellcheck="false"
-                  placeholder="Nombre"
-                />
-              </div>
-              <div
-                *ngIf="
-                  formGroup.get('firstName')?.invalid &&
-                  (formGroup.get('firstName')?.touched ||
-                    formGroup.get('firstName')?.dirty)
-                "
-                class="alert alert-danger p-1 mt-1 d-flex align-items-center"
-              >
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                <small>Este campo es requerido</small>
-              </div>
-            </div>
-
-            <!-- Campo de Apellido -->
-            <div class="form-group mb-3">
-              <label for="lastName">Apellido</label>
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  type="text"
-                  formControlName="lastName"
-                  autocomplete="off"
-                  spellcheck="false"
-                  placeholder="Apellido"
-                />
-              </div>
-              <div
-                *ngIf="
-                  formGroup.get('lastName')?.invalid &&
-                  (formGroup.get('lastName')?.touched ||
-                    formGroup.get('lastName')?.dirty)
-                "
-                class="alert alert-danger p-1 mt-1 d-flex align-items-center"
-              >
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                <small>Este campo es requerido</small>
-              </div>
-            </div>
-
-            <!-- Campo de Contraseña -->
-            <div class="form-group mb-3">
-              <label for="password">Contraseña</label>
-              <div class="input-group">
-                <input
-                  class="form-control"
-                  [type]="hide ? 'password' : 'text'"
-                  formControlName="password"
-                  autocomplete="off"
-                  spellcheck="false"
-                  placeholder="******************"
-                  (input)="onPasswordInput()"
-                />
-              </div>
-              <div
-                *ngIf="
-                  formGroup.get('password')?.invalid &&
-                  (formGroup.get('password')?.touched ||
-                    formGroup.get('password')?.dirty)
-                "
-                class="alert alert-danger p-1 mt-1 d-flex align-items-center"
-              >
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                <small *ngIf="formGroup.get('password')?.hasError('required')"
-                  >Este campo es requerido</small
-                >
-                <small *ngIf="formGroup.get('password')?.hasError('minlength')"
-                  >Debe tener al menos 8 caracteres</small
-                >
-              </div>
-            </div>
-
-            <!-- Campo de Rol -->
-            <div class="form-group mb-3">
-              <label for="role">Rol</label>
-              <div class="input-group">
-                <select class="form-control" formControlName="role">
-                  <option
-                    *ngFor="let key of getRoleKeys()"
-                    [value]="roles[key]"
-                  >
-                    {{ key }}
-                  </option>
-                </select>
-              </div>
-              <div
-                *ngIf="
-                  formGroup.get('role')?.invalid &&
-                  (formGroup.get('role')?.touched ||
-                    formGroup.get('role')?.dirty)
-                "
-                class="alert alert-danger p-1 mt-1 d-flex align-items-center"
-              >
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                <small>Este campo es requerido</small>
-              </div>
-            </div>
-          </div>
-          <br />
-          <br />
-          <br />
-          <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
-            <button class="btn btn-secondary mr-2" (click)="closeModal()">
-              Cancelar
-            </button>
-            <button
-              *ngIf="button === true"
-              type="button"
-              class="btn btn-primary"
-              (click)="onSubmit()"
-            >
-              Crear
-            </button>
-            <button
-              *ngIf="button === false"
-              type="button"
-              class="btn btn-primary"
-              (click)="onSubmitUpdate()"
-            >
-              Actualizar
-            </button>
-          </div>
-        </form>
-      </div>
+    <div class="modal-header d-flex justify-content-center w-100">
+      <h1 class="modal-title display-5 mb-4">{{ title }}</h1>
     </div>
+
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <!-- Campo Nombre de Usuario -->
+      <div class="mb-3">
+        <label for="userName" class="form-label">Nombre de Usuario</label>
+        <input
+          type="text"
+          id="userName"
+          formControlName="userName"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('userName')?.invalid &&
+              formGroup.get('userName')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('userName')?.invalid && formGroup.get('userName')?.touched
+          "
+        >
+          El nombre de usuario es obligatorio y debe tener entre 4 y 20 caracteres.
+        </div>
+      </div>
+
+      <!-- Campo Nombre -->
+      <div class="mb-3">
+        <label for="firstName" class="form-label">Nombre</label>
+        <input
+          type="text"
+          id="firstName"
+          formControlName="firstName"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('firstName')?.invalid &&
+              formGroup.get('firstName')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('firstName')?.invalid && formGroup.get('firstName')?.touched
+          "
+        >
+          El nombre es obligatorio.
+        </div>
+      </div>
+
+      <!-- Campo Apellido -->
+      <div class="mb-3">
+        <label for="lastName" class="form-label">Apellido</label>
+        <input
+          type="text"
+          id="lastName"
+          formControlName="lastName"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('lastName')?.invalid &&
+              formGroup.get('lastName')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('lastName')?.invalid && formGroup.get('lastName')?.touched
+          "
+        >
+          El apellido es obligatorio.
+        </div>
+      </div>
+
+      <!-- Campo Contraseña (solo al crear) -->
+      <div class="mb-3" *ngIf="button">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('password')?.invalid &&
+              formGroup.get('password')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('password')?.invalid && formGroup.get('password')?.touched
+          "
+        >
+          La contraseña es obligatoria y debe tener al menos 8 caracteres.
+        </div>
+      </div>
+
+      <!-- Campo Rol -->
+      <div class="mb-3">
+        <label for="role" class="form-label">Rol</label>
+        <select
+          id="role"
+          formControlName="role"
+          class="form-select"
+          [ngClass]="{
+            'is-invalid':
+              formGroup.get('role')?.invalid &&
+              formGroup.get('role')?.touched
+          }"
+        >
+          <option *ngFor="let roleKey of getRoleKeys()" [value]="roles[roleKey]">
+            {{ roles[roleKey] }}
+          </option>
+        </select>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formGroup.get('role')?.invalid && formGroup.get('role')?.touched
+          "
+        >
+          Selecciona un rol válido.
+        </div>
+      </div>
+    </form>
+  </div>
+  <br />
+  <div class="modal-footer d-flex justify-content-center w-100 mt-3">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="formGroup.invalid"
+      (click)="!currentUser.id ? onSubmit() : onSubmitUpdate()"
+    >
+      {{ currentUser.id ? "Actualizar Usuario" : "Crear Usuario" }}
+    </button>
   </div>
 </div>

@@ -13,7 +13,6 @@ import {
   Component,
   OnInit,
   Inject,
-  CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectorRef,
 } from '@angular/core';
 import {
@@ -22,6 +21,8 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { Area } from '../../../interface/area/area';
+import { AreaService } from '../../../service/area.service';
 
 @Component({
   selector: 'app-empleado-modal',
@@ -30,16 +31,12 @@ import {
   styleUrls: ['./empleado-modal.component.css'],
   imports: [
     ReactiveFormsModule,
-    NzModalModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    NzButtonModule,
     CommonModule,
   ],
 })
 export class EmpleadoModalComponent implements OnInit {
   currentEmpleado = {} as Employee;
+  area: Area[] = [];
   title: string = 'Nuevo Empleado';
   hide: boolean = true;
   loading: boolean = true;
@@ -49,6 +46,7 @@ export class EmpleadoModalComponent implements OnInit {
 
   constructor(
     private _empleadosService: EmpleadosService,
+    private _areaService: AreaService,
     private _formBuilder: FormBuilder,
     private changeDetectorRef: ChangeDetectorRef,
     public _dialogRef: MatDialogRef<EmpleadoModalComponent>,
@@ -70,6 +68,7 @@ export class EmpleadoModalComponent implements OnInit {
     this.modalCommunicationService.closeModal$.subscribe(() => {
       this._dialogRef.close();
     });
+    this.loadArea();
   }
 
   initForm() {
@@ -102,6 +101,7 @@ export class EmpleadoModalComponent implements OnInit {
         ],
       ],
       correoEmpleado: ['', [Validators.required, Validators.email]],
+      area: ['', [Validators.required]],
     });
     this.formGroup.valueChanges.subscribe((val) => {
       this.currentEmpleado = val;
@@ -132,7 +132,16 @@ export class EmpleadoModalComponent implements OnInit {
 
   private handleResponse(response: any): void {
     this.currentEmpleado = response;
-    this.formGroup.patchValue(this.currentEmpleado);
+    this.formGroup.patchValue({
+      id: this.currentEmpleado.id,
+      cedula: this.currentEmpleado.cedula,
+      nombreEmpleado: this.currentEmpleado.nombreEmpleado,
+      apellidoEmpleado: this.currentEmpleado.apellidoEmpleado,
+      correoEmpleado: this.currentEmpleado.correoEmpleado,
+      area: this.currentEmpleado.area
+        ? this.currentEmpleado.area.nombre
+        : '',
+    });
     this.loading = false;
   }
 
@@ -185,27 +194,52 @@ export class EmpleadoModalComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    if (this.formGroup.valid) {
-      if (!this.currentEmpleado.id) {
-        this.createEmpleado();
-        console.log('entraaa crear');
+    if (this.formGroup.valid) {;
+      const nombreArea = this.formGroup.value.area;
+      const areaSeleccionada = this.area.find(area => area.nombre === nombreArea);
+      if (areaSeleccionada) {
+        this.currentEmpleado.area = areaSeleccionada;
+        
+        if (!this.currentEmpleado.id) {
+          this.createEmpleado();
+        } else {
+          this.updateEmpleado();
+        }
         this.modalCommunicationService.close();
       } else {
-        this.updateEmpleado();
-        console.log('entraaa editar');
-        this.modalCommunicationService.close();
+        console.error('área no encontrada');
       }
     }
   }
 
   public onSubmitUpdate(): void {
-    // Actualiza los datos del formulario en el objeto currentEmpleado
-    this.currentEmpleado = { ...this.currentEmpleado, ...this.formGroup.value };
-    this.updateEmpleado();
-    console.log('entraaa editarxd');
-    this.modalCommunicationService.close();
+    if (this.formGroup.valid) {
+      const nombreArea = this.formGroup.value.area;
+      const areaSeleccionada = this.area.find(cat => cat.nombre === nombreArea);
+  
+      if (areaSeleccionada) {
+        this.currentEmpleado.area = areaSeleccionada;
+        
+        this.updateEmpleado();
+        console.log('Actualización en progreso...', this.currentEmpleado);
+        this.modalCommunicationService.close();
+      } else {
+        console.error('Horario o área no encontrada');
+      }
+    }
   }
   ngAfterViewInit() {
     this.changeDetectorRef.detectChanges();
+  }
+  private loadArea(): void {
+    this._areaService.getAreas().subscribe(
+      (areas: Area[]) => {
+        this.area = areas;
+      },
+      (error) => {
+        console.error("Error al cargar areas:", error);
+        this.loading = false;
+      }
+    );
   }
 }

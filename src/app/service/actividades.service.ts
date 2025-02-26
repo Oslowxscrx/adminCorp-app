@@ -19,7 +19,11 @@ export class ActividadesService {
     return this.http.get<Actividad[]>(this.API_URL, this.httpOptions);
   }
   public getActividadById(id: number): Observable<Actividad> {
-    return this.http.get<Actividad>(`${this.API_URL}/${id}/`);
+    return this.http.get<Actividad>(`${this.API_URL}/${id}`);
+  }
+  
+  public getActividadByStaffId(id: number): Observable<Actividad> {
+    return this.http.get<Actividad>(`${this.API_URL}/staff/${id}`);
   }
 
   createActividad(actividad: Actividad): Observable<Actividad> {
@@ -28,7 +32,7 @@ export class ActividadesService {
 
   public updateActividad(actividad: Actividad): Observable<Actividad> {
     return this.http.put<Actividad>(
-      `${this.API_URL}/update/${actividad.id}/`,
+      `${this.API_URL}/${actividad.id}`,
       actividad,
       this.httpOptions
     );
@@ -36,7 +40,7 @@ export class ActividadesService {
 
   public deleteActividadById(actividadId: number): Observable<Actividad> {
     return this.http.delete<Actividad>(
-      `${this.API_URL}/${actividadId}/`,
+      `${this.API_URL}/${actividadId}`,
       this.httpOptions
     );
   }

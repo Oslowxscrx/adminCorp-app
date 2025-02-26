@@ -25,9 +25,14 @@
           [nzBordered]="true"
           [ngStyle]="{'background-color': actividad.color}"
         >
-          <p><strong>Asigando:</strong> {{ actividad.asignado }}</p>
+          <p><strong>Asigando:</strong> {{ actividad.staff.firstName }}</p>
           <p><strong>Descripción:</strong> {{ actividad.descripcion }}</p>
           <p><strong>Estado:</strong> {{ actividad.estado }}</p>
+          <button nz-button  class="buton-progreso" (click)="openProgressModalActividad(actividad)">
+            Progreso
+          </button>
+          <hr>
+          <p><strong>Fecha de Creación:</strong> {{ actividad.createAt | date : "yyyy-MM-dd" }}</p>
           <p><strong>Tiempo de Entrega:</strong> {{ actividad.tiempoEntrega }}</p>
           <button
             nz-button
